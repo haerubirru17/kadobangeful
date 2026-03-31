@@ -1825,7 +1825,10 @@ async function sendTelegramNotification(userName) {
 async function handleVerify() {
   const input = document.getElementById('nameInput');
   const errorEl = document.getElementById('verifyError');
+  const btn = document.getElementById('nameSendBtn');
   const val = input.value;
+
+  // Cek dulu nama secara lokal (hanya untuk UX — bukan validasi voucher)
   const matched = checkName(val);
 
   if (!matched) {
@@ -1839,8 +1842,36 @@ async function handleVerify() {
     return;
   }
 
-  currentUser = matched;
+  // Loading state
+  btn.disabled = true;
+  btn.textContent = '...';
   errorEl.textContent = '';
+
+  // Ambil voucher dari Worker — kode tidak pernah ada di frontend
+  try {
+    const res = await fetch(`${WORKER_URL}/verify?nama=${encodeURIComponent(matched)}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      errorEl.textContent = data.message || "Gagal mengambil voucher. Coba lagi ya.";
+      btn.disabled = false;
+      btn.textContent = 'Buka →';
+      return;
+    }
+
+    // Simpan voucher dari Worker ke variabel global (hanya ada di memori, tidak di source)
+    window._GIFT_CODES = data.codes || [];
+
+  } catch (e) {
+    errorEl.textContent = "Koneksi gagal. Pastikan internet kamu aktif ya 🙏";
+    btn.disabled = false;
+    btn.textContent = 'Buka →';
+    return;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Buka →';
+  currentUser = matched;
 
   // Kirim notifikasi Telegram (background, tidak blokir UI)
   sendTelegramNotification(matched);
@@ -1925,10 +1956,17 @@ function showGiftCards() {
   const container = document.getElementById('giftCardsContainer');
   container.innerHTML = '';
 
-  GIFT_CARDS.forEach((card, i) => {
+  // Voucher datang dari Worker (/verify), bukan dari source code
+  const codes = window._GIFT_CODES || [];
+  const cardLabels = [
+    { title: "Shopee Gift Card", amount: "Rp500.000" },
+  ];
+
+  codes.forEach((code, i) => {
+    const label = cardLabels[i] || { title: "Voucher Shopee", amount: "" };
     const el = document.createElement('div');
     el.className = 'gift-card';
-    el.setAttribute('data-code', card.code);
+    el.setAttribute('data-code', code);
     el.setAttribute('data-index', i);
     el.innerHTML = `
       <div class="gift-card-bg"></div>
@@ -1940,12 +1978,12 @@ function showGiftCards() {
       <div class="gift-card-content">
         <div class="gift-card-logo">Shopee</div>
         <div class="gift-card-type">Shopee Gift Card</div>
-        <div class="gift-card-title">${card.title}</div>
+        <div class="gift-card-title">${label.title}</div>
         <div class="gift-card-code-row">
-          <span class="gift-card-code">${card.code}</span>
+          <span class="gift-card-code">${code}</span>
           <button class="gift-card-copy-btn" onclick="event.stopPropagation(); copyCardCode(this.closest('.gift-card'))">Salin</button>
         </div>
-        <div class="gift-card-amount">Senilai <strong>${card.amount}</strong></div>
+        <div class="gift-card-amount">Senilai <strong>${label.amount}</strong></div>
         <div class="copy-toast" id="toast-${i}">✓ Kode disalin!</div>
       </div>
     `;
