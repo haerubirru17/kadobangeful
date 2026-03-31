@@ -10,7 +10,7 @@
 // ══════════════════════════════════════════════════════════
 
 // ⚠️ Ganti dengan URL Worker baru kamu (akun haerubirru17@gmail.com)
-const WORKER_URL = "https:/kadobangeful.haerubirru17.workers.dev";
+const WORKER_URL = "https://kadobangeful.haerubirru17.workers.dev";
 
 // YouTube video ID (bagian setelah ?v= di URL YouTube)
 // Kosongkan ("") untuk menonaktifkan video
