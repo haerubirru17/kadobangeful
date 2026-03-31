@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>Untuk Bang Efung & Kak Zia 💍</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
 
 /* ── Reset ── */
@@ -362,8 +362,9 @@ body {
   font-size: 1.1rem;
 }
 .letter-title {
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.6rem;
+  font-family: 'Caveat', cursive;
+  font-size: 2rem;
+  font-weight: 700;
   color: #3d2c1e;
   text-align: center;
   display: block;
@@ -429,8 +430,9 @@ body {
   border: none;
   outline: none;
   background: transparent;
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.2rem;
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  font-weight: 600;
   color: #3d2c1e;
   padding: 0.2rem 0;
 }
@@ -1882,7 +1884,7 @@ async function handleVerify() {
   // Determine intro
   let segments;
   if (matched === "saeful bahri") segments = INTRO_EFUNG;
-  else if (matched === "amirah fauziah") segments = INTRO_ZIA;
+  else if (matched === "amriah fauziah") segments = INTRO_ZIA;
   else segments = INTRO_HAERU;
 
   document.getElementById('intro-section').classList.add('visible');
@@ -2004,7 +2006,7 @@ function showGiftCards() {
     document.getElementById('letterFooter').classList.add('visible');
     document.body.classList.add('chat-active');
 
-    if (currentUser === 'amirah fauziah' && HAERU_CAMEO.enabled) {
+    if (currentUser === 'amriah fauziah' && HAERU_CAMEO.enabled) {
       await runHaeuCameo();
     } else {
       await sendBotMessage(true);
@@ -2232,7 +2234,7 @@ function addWaButton(userName) {
 
   const messages = {
     "saeful bahri": `Halo Haeru! Bang Efung di sini. Udah buka kado digitalmu — makasih banyak ya, Hae 🤍`,
-    "amirah fauziah": `Halo Haeru! Ini Kak Zia. Baru buka kado dari kamu — terima kasih ya, sangat berkesan 🤍`,
+    "amriah fauziah": `Halo Haeru! Ini Kak Zia. Baru buka kado dari kamu — terima kasih ya, sangat berkesan 🤍`,
     "haeru damiyati": `Halo Haeru, ini kamu sendiri lagi ngetes 😅`
   };
 
