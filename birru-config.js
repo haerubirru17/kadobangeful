@@ -9,27 +9,15 @@
 // 1. KONFIGURASI UTAMA
 // ══════════════════════════════════════════════════════════
 
-const WORKER_URL = "https://kadohaeru.birrukhey.workers.dev";
-
-const GIFT_CARDS = [
-  {
-    title: "Voucher Belanja",
-    code: "GANTI_KODE_GIFT_CARD_BELANJA_DISINI",
-    amount: "Rp750.000"
-  },
-  {
-    title: "Voucher Pulsa & Tagihan",
-    code: "GANTI_KODE_GIFT_CARD_TAGIHAN_DISINI",
-    amount: "Rp250.000"
-  }
-];
+// ⚠️ Ganti dengan URL Worker baru kamu (akun haerubirru17@gmail.com)
+const WORKER_URL = "https:/kadobangeful.haerubirru17.workers.dev";
 
 // YouTube video ID (bagian setelah ?v= di URL YouTube)
 // Kosongkan ("") untuk menonaktifkan video
-const YOUTUBE_VIDEO_ID = "GANTI_DENGAN_VIDEO_ID_YOUTUBE";
+const YOUTUBE_VIDEO_ID = "ochfdBjLJIw";
 
 // Nomor WA format internasional tanpa + atau spasi
-const WA_NUMBER = "GANTI_NOMOR_WA_KAMU";
+const WA_NUMBER = "62895347201717";
 
 
 // ══════════════════════════════════════════════════════════
@@ -191,7 +179,7 @@ BATAS DATA:
 ════════════════════════════════════════
 HADIAH
 ════════════════════════════════════════
-- Shopee Gift Card total Rp1.000.000 (Voucher Belanja Rp750.000 + Pulsa & Tagihan Rp250.000)
+- Shopee Gift Card senilai Rp500.000
 - Cara redeem: Shopee → Profil → Voucher Saya → Tukar Voucher
 - JANGAN sebut atau tampilkan kode gift card. Sudah ditampilkan di layar.
 
