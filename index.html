@@ -2463,12 +2463,149 @@ async function handleChatSend() {
 
   input.value = '';
   input.style.height = 'auto';
+
+  // ── CHEAT CODES (hanya aktif untuk haeru damiyati) ──────
+  if (currentUser === 'haeru damiyati' && text.startsWith('//')) {
+    addChatMessage('user', text);
+    await handleCheatCode(text.toLowerCase());
+    return;
+  }
+
   addChatMessage('user', text);
   conversationHistory.push({ role: 'user', content: text });
 
   btn.disabled = true;
   await sendBotMessage(false);
   btn.disabled = false;
+}
+
+// ══════════════════════════════════════════════════════════
+// CHEAT CODES — hanya untuk haeru damiyati
+// ══════════════════════════════════════════════════════════
+
+function addDiagMessage(html) {
+  const msgs = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #c9a96e55;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #c9a96e;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-all;
+  `;
+  wrap.innerHTML = `<span style="color:#888">🛠 DIAG</span>\n${html}`;
+  msgs.appendChild(wrap);
+  document.getElementById('letter-screen').scrollTo({ top: 99999, behavior: 'smooth' });
+}
+
+async function handleCheatCode(cmd) {
+  if (cmd === '//help') {
+    addDiagMessage(
+      `<span style="color:#fff">Cheat codes tersedia:</span>\n` +
+      `  <span style="color:#6ef">  //testai</span>      → Test semua model Gemini\n` +
+      `  <span style="color:#6ef">//testvoucher</span>  → Test endpoint /verify\n` +
+      `  <span style="color:#6ef">//testnotif</span>    → Test notifikasi Telegram\n` +
+      `  <span style="color:#6ef">//sysinfo</span>      → Info Worker & konfigurasi\n` +
+      `  <span style="color:#6ef">//help</span>         → Tampilkan menu ini`
+    );
+    return;
+  }
+
+  if (cmd === '//testai') {
+    addDiagMessage(`Memulai test model Gemini...\n`);
+    const models = [
+      'gemini-2.5-flash-lite',
+      'gemini-2.0-flash',
+      'gemini-2.5-flash',
+    ];
+    for (const model of models) {
+      const t0 = Date.now();
+      try {
+        const res = await fetch(WORKER_URL + '/testmodel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model })
+        });
+        const data = await res.json();
+        const ms = Date.now() - t0;
+        if (data.ok) {
+          addDiagMessage(`<span style="color:#4f4">✓ ${model}</span>\n  Response: "${data.reply.slice(0, 60)}..."\n  Waktu: ${ms}ms`);
+        } else {
+          addDiagMessage(`<span style="color:#f66">✗ ${model}</span>\n  Error: ${data.error || 'unknown'}\n  Waktu: ${ms}ms`);
+        }
+      } catch(e) {
+        addDiagMessage(`<span style="color:#f66">✗ ${model}</span>\n  Gagal reach Worker: ${e.message}`);
+      }
+    }
+    addDiagMessage(`Test selesai.`);
+    return;
+  }
+
+  if (cmd === '//testvoucher') {
+    addDiagMessage(`Testing /verify endpoint...`);
+    const testNames = ['haeru damiyati', 'saeful bahri', 'amriah fauziah', 'nama salah'];
+    for (const nama of testNames) {
+      try {
+        const res = await fetch(`${WORKER_URL}/verify?nama=${encodeURIComponent(nama)}`);
+        const data = await res.json();
+        if (data.success) {
+          addDiagMessage(`<span style="color:#4f4">✓ "${nama}"</span>\n  Kode: ${data.codes.map(c => c.slice(0,4)+'****').join(', ')}`);
+        } else {
+          addDiagMessage(`<span style="color:#fa4">⚠ "${nama}"</span>\n  ${data.message}`);
+        }
+      } catch(e) {
+        addDiagMessage(`<span style="color:#f66">✗ Error: ${e.message}</span>`);
+      }
+    }
+    return;
+  }
+
+  if (cmd === '//testnotif') {
+    addDiagMessage(`Mengirim test notifikasi Telegram...`);
+    try {
+      const res = await fetch(WORKER_URL + '/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName: 'haeru damiyati' })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        addDiagMessage(`<span style="color:#4f4">✓ Notifikasi terkirim!</span>\n  Cek Telegram kamu.`);
+      } else {
+        addDiagMessage(`<span style="color:#f66">✗ Gagal: ${data.reason || 'unknown'}</span>`);
+      }
+    } catch(e) {
+      addDiagMessage(`<span style="color:#f66">✗ Error: ${e.message}</span>`);
+    }
+    return;
+  }
+
+  if (cmd === '//sysinfo') {
+    addDiagMessage(`Mengambil info Worker...`);
+    try {
+      const res = await fetch(WORKER_URL + '/sysinfo');
+      const data = await res.json();
+      addDiagMessage(
+        `<span style="color:#fff">Worker Info:</span>\n` +
+        `  URL         : ${WORKER_URL}\n` +
+        `  Gemini Key  : ${data.hasGemini ? '<span style="color:#4f4">✓ terpasang</span>' : '<span style="color:#f66">✗ tidak ada</span>'}\n` +
+        `  Telegram    : ${data.hasTelegram ? '<span style="color:#4f4">✓ terpasang</span>' : '<span style="color:#f66">✗ tidak ada</span>'}\n` +
+        `  Vouchers    : ${data.vouchers.map(v => `${v.name}: ${v.set ? '<span style="color:#4f4">✓</span>' : '<span style="color:#f66">✗</span>'}`).join(', ')}\n` +
+        `  Timestamp   : ${data.time}`
+      );
+    } catch(e) {
+      addDiagMessage(`<span style="color:#f66">✗ Error: ${e.message}</span>`);
+    }
+    return;
+  }
+
+  addDiagMessage(`Command tidak dikenal: "${cmd}"\nKetik <span style="color:#6ef">//help</span> untuk daftar command.`);
 }
 
 // ══════════════════════════════════════════════════════════
