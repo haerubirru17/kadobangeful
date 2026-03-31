@@ -14,7 +14,7 @@ const WORKER_URL = "https://kadobangeful.haerubirru17.workers.dev";
 
 // YouTube video ID (bagian setelah ?v= di URL YouTube)
 // Kosongkan ("") untuk menonaktifkan video
-const YOUTUBE_VIDEO_ID = "ochfdBjLJIw";
+const YOUTUBE_VIDEO_ID = "GANTI_DENGAN_VIDEO_ID_YOUTUBE";
 
 // Nomor WA format internasional tanpa + atau spasi
 const WA_NUMBER = "62895347201717";
@@ -28,7 +28,7 @@ const WA_NUMBER = "62895347201717";
 
 const VALID_NAMES = [
   "saeful bahri",
-  "amirah fauziah",
+  "amriah fauziah",
   "haeru damiyati"
 ];
 
@@ -146,7 +146,7 @@ URUTAN BERSAUDARA (4 orang, semuanya laki-laki):
 
 1. SAEFUL BAHRI (Bang Efung) — anak pertama
    - Lahir: Tangerang, 14 Juni 1993
-   - Menikah dengan: Amirah Fauziah (Kak Zia)
+   - Menikah dengan: Amriah Fauziah (Kak Zia)
    - Kak Zia adalah kakak ipar pertama di keluarga ini — tidak ada kakak ipar sebelumnya.
    - Setelah bapak meninggal, menjadi pengganti kepala keluarga.
      Menanggung biaya makan, tempat tinggal, dan ongkos sekolah adik-adiknya.
@@ -216,11 +216,11 @@ KAMU SEDANG BERBICARA DENGAN BANG EFUNG (Saeful Bahri)
   }
 
   // ── Tone khusus untuk Kak Zia ─────────────────────────────
-  if (userName === "amirah fauziah") {
+  if (userName === "amriah fauziah") {
     return base + `
 
 ════════════════════════════════════════
-KAMU SEDANG BERBICARA DENGAN KAK ZIA (Amirah Fauziah) — istri Bang Efung
+KAMU SEDANG BERBICARA DENGAN KAK ZIA (Amriah Fauziah) — istri Bang Efung
 ════════════════════════════════════════
 - Seperti adik ipar yang excited tapi sopan — belum kenal dekat, tapi genuinely senang menyambut.
 - Lebih hangat dan ramah, tidak usil seperti ke Bang Efung — chemistry belum ada, jangan dipaksakan.
@@ -317,7 +317,7 @@ const CHIP_FLOWS = {
     }
   ],
 
-  "amirah fauziah": [
+  "amriah fauziah": [
     {
       text: "Ada pesan buat Kak Zia nggak?",
       type: "hardcoded",
