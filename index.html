@@ -1048,6 +1048,50 @@ body.chat-active .letter-paper {
 #chatSendBtn:active { transform: scale(0.97); }
 #chatSendBtn:disabled { background: rgba(201,169,110,0.3); color: rgba(44,24,16,0.4); cursor: not-allowed; }
 
+/* ── Dev Model Switcher ── */
+#devModelBar {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  background: rgba(0,0,0,0.12);
+  border: 1px solid rgba(201,169,110,0.25);
+  border-radius: 4px;
+  font-family: 'Lato', monospace;
+}
+#devModelBar.visible { display: flex; }
+#devModelBar label {
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.7);
+  white-space: nowrap;
+}
+#devModelSelect {
+  flex: 1;
+  background: rgba(44,24,16,0.6);
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 3px;
+  color: #c9a96e;
+  font-size: 0.72rem;
+  font-family: 'Courier New', monospace;
+  padding: 0.2rem 0.4rem;
+  outline: none;
+  cursor: pointer;
+}
+#devModelSelect option { background: #2c1810; color: #c9a96e; }
+#devModelBadge {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2c1810;
+  background: #c9a96e;
+  border-radius: 2px;
+  padding: 0.1rem 0.35rem;
+  white-space: nowrap;
+}
+
 /* Letter closing */
 .letter-closing {
   font-family: 'Dancing Script', cursive;
@@ -1738,6 +1782,26 @@ body.chat-active .letter-paper {
 
     <!-- Footer / input -->
     <div class="letter-footer" id="letterFooter">
+      <!-- Dev Model Switcher — hanya muncul setelah //devmode -->
+      <div id="devModelBar">
+        <label>🛠 Model</label>
+        <select id="devModelSelect">
+          <optgroup label="── Gemini ──">
+            <option value="auto" selected>auto (fallback chain)</option>
+            <option value="gemini:gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+            <option value="gemini:gemini-2.5-flash">gemini-2.5-flash</option>
+          </optgroup>
+          <optgroup label="── Groq ──">
+            <option value="groq:llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+            <option value="groq:llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+            <option value="groq:meta-llama/llama-4-scout-17b-16e-instruct">llama-4-scout-17b</option>
+            <option value="groq:qwen/qwen3-32b">qwen3-32b</option>
+            <option value="groq:openai/gpt-oss-120b">gpt-oss-120b</option>
+            <option value="groq:openai/gpt-oss-20b">gpt-oss-20b</option>
+          </optgroup>
+        </select>
+        <span id="devModelBadge">DEV</span>
+      </div>
       <div class="letter-reply-label">Balas surat ini...</div>
       <div class="letter-input-row">
         <textarea id="chatInput" rows="1" placeholder="Tulis pesanmu..."></textarea>
@@ -2424,12 +2488,14 @@ async function sendBotMessage(isFirst = false) {
   setTimeout(() => ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' }), 100);
 
   try {
+    const selectedModel = document.getElementById('devModelSelect')?.value || 'auto';
     const body = {
       systemPrompt: getSystemPrompt(currentUser),
       messages: isFirst
         ? [{ role: 'user', content: 'Aku baru saja membuka suratmu dan melihat hadiahnya. Sapa aku dengan hangat dan usil sesuai karaktermu!' }]
         : conversationHistory
     };
+    if (selectedModel !== 'auto') body.forceModel = selectedModel;
 
     const res = await fetch(WORKER_URL, {
       method: 'POST',
@@ -2445,7 +2511,13 @@ async function sendBotMessage(isFirst = false) {
     }
 
     typing.classList.remove('visible');
-    addChatMessage('bot', reply);
+
+    // Tampilkan error model jika ada (mode dev)
+    if (data.modelError) {
+      addChatMessage('bot', `⚠️ *[DEV]* Model \`${data.modelError.model}\` gagal: ${data.modelError.reason}\n\n${reply}`);
+    } else {
+      addChatMessage('bot', reply);
+    }
 
   } catch (e) {
     typing.classList.remove('visible');
@@ -2508,12 +2580,26 @@ async function handleCheatCode(cmd) {
   if (cmd === '//help') {
     addDiagMessage(
       `<span style="color:#fff">Cheat codes tersedia:</span>\n` +
-      `  <span style="color:#6ef">  //testai</span>      → Test semua model Gemini\n` +
+      `  <span style="color:#6ef">  //testai</span>      → Test semua model (Gemini + Groq)\n` +
       `  <span style="color:#6ef">//testvoucher</span>  → Test endpoint /verify\n` +
       `  <span style="color:#6ef">//testnotif</span>    → Test notifikasi Telegram\n` +
       `  <span style="color:#6ef">//sysinfo</span>      → Info Worker & konfigurasi\n` +
+      `  <span style="color:#6ef">//devmode</span>      → Toggle dev model switcher\n` +
       `  <span style="color:#6ef">//help</span>         → Tampilkan menu ini`
     );
+    return;
+  }
+
+  if (cmd === '//devmode') {
+    const bar = document.getElementById('devModelBar');
+    const isVisible = bar.classList.toggle('visible');
+    if (isVisible) {
+      addDiagMessage(`<span style="color:#4f4">🛠 Dev Mode ON</span> — Model switcher aktif di atas input.\nPilih model untuk force ke model tertentu, atau pilih <b>auto</b> untuk pakai fallback chain.`);
+    } else {
+      // Reset ke auto saat dimatikan
+      document.getElementById('devModelSelect').value = 'auto';
+      addDiagMessage(`<span style="color:#fa4">🛠 Dev Mode OFF</span> — Kembali ke fallback chain normal.`);
+    }
     return;
   }
 
@@ -2523,6 +2609,11 @@ async function handleCheatCode(cmd) {
       'gemini-2.5-flash-lite',
       'gemini-2.5-flash',
       'groq:llama-3.3-70b-versatile',
+      'groq:llama-3.1-8b-instant',
+      'groq:meta-llama/llama-4-scout-17b-16e-instruct',
+      'groq:qwen/qwen3-32b',
+      'groq:openai/gpt-oss-120b',
+      'groq:openai/gpt-oss-20b',
     ];
     for (const model of models) {
       const t0 = Date.now();
