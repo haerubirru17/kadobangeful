@@ -1048,6 +1048,16 @@ body.chat-active .letter-paper {
 #chatSendBtn:active { transform: scale(0.97); }
 #chatSendBtn:disabled { background: rgba(201,169,110,0.3); color: rgba(44,24,16,0.4); cursor: not-allowed; }
 
+/* ── Dev Model Tag (bubble label, devmode only) ── */
+.dev-model-tag {
+  font-size: 0.58rem;
+  font-family: 'Courier New', monospace;
+  color: rgba(201,169,110,0.6);
+  letter-spacing: 0.08em;
+  margin-top: 0.2rem;
+  padding-left: 0.15rem;
+}
+
 /* ── Dev Model Switcher ── */
 #devModelBar {
   display: none;
@@ -1058,7 +1068,6 @@ body.chat-active .letter-paper {
   background: rgba(0,0,0,0.12);
   border: 1px solid rgba(201,169,110,0.25);
   border-radius: 4px;
-  font-family: 'Lato', monospace;
 }
 #devModelBar.visible { display: flex; }
 #devModelBar label {
@@ -1067,6 +1076,7 @@ body.chat-active .letter-paper {
   text-transform: uppercase;
   color: rgba(201,169,110,0.7);
   white-space: nowrap;
+  font-family: 'Lato', sans-serif;
 }
 #devModelSelect {
   flex: 1;
@@ -1090,6 +1100,7 @@ body.chat-active .letter-paper {
   border-radius: 2px;
   padding: 0.1rem 0.35rem;
   white-space: nowrap;
+  font-family: 'Lato', sans-serif;
 }
 
 /* Letter closing */
@@ -1782,12 +1793,14 @@ body.chat-active .letter-paper {
 
     <!-- Footer / input -->
     <div class="letter-footer" id="letterFooter">
-      <!-- Dev Model Switcher — hanya muncul setelah //devmode -->
+      <!-- Dev Model Switcher — hanya muncul setelah //devmode (haeru only) -->
       <div id="devModelBar">
         <label>🛠 Model</label>
         <select id="devModelSelect">
-          <optgroup label="── Gemini ──">
+          <optgroup label="── Auto ──">
             <option value="auto" selected>auto (fallback chain)</option>
+          </optgroup>
+          <optgroup label="── Gemini ──">
             <option value="gemini:gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
             <option value="gemini:gemini-2.5-flash">gemini-2.5-flash</option>
           </optgroup>
@@ -1827,6 +1840,7 @@ let currentUser = null;
 let conversationHistory = [];
 let isBotTyping = false;
 let verifyAttempts = 0;
+let isDevMode = false;
 
 // ══════════════════════════════════════════════════════════
 // PARTICLES
@@ -2249,7 +2263,7 @@ function launchConfetti() {
 // CHAT
 // ══════════════════════════════════════════════════════════
 
-function addChatMessage(role, text, quotedText = null, quotedSender = null) {
+function addChatMessage(role, text, quotedText = null, quotedSender = null, usedModel = null) {
   const container = document.getElementById('chatMessages');
   const el = document.createElement('div');
   el.className = `letter-message ${role === 'bot' ? 'bot-msg' : 'user-msg'}`;
@@ -2259,9 +2273,13 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null) {
   const quoteHtml = quotedText
     ? `<div class="msg-quote"><span class="msg-quote-sender">${quotedSender || 'Haeru'}</span>${quotedText}</div>`
     : '';
+  const modelBadgeHtml = usedModel
+    ? `<div class="dev-model-tag">🛠 ${usedModel}</div>`
+    : '';
   el.innerHTML = `
     <div class="msg-label">${label}</div>
     <div class="${bubbleClass}">${quoteHtml}${text.replace(/\n/g, '<br>')}</div>
+    ${modelBadgeHtml}
   `;
   container.appendChild(el);
 
@@ -2495,7 +2513,7 @@ async function sendBotMessage(isFirst = false) {
         ? [{ role: 'user', content: 'Aku baru saja membuka suratmu dan melihat hadiahnya. Sapa aku dengan hangat dan usil sesuai karaktermu!' }]
         : conversationHistory
     };
-    if (selectedModel !== 'auto') body.forceModel = selectedModel;
+    if (isDevMode && selectedModel !== 'auto') body.forceModel = selectedModel;
 
     const res = await fetch(WORKER_URL, {
       method: 'POST',
@@ -2511,13 +2529,7 @@ async function sendBotMessage(isFirst = false) {
     }
 
     typing.classList.remove('visible');
-
-    // Tampilkan error model jika ada (mode dev)
-    if (data.modelError) {
-      addChatMessage('bot', `⚠️ *[DEV]* Model \`${data.modelError.model}\` gagal: ${data.modelError.reason}\n\n${reply}`);
-    } else {
-      addChatMessage('bot', reply);
-    }
+    addChatMessage('bot', reply, null, null, isDevMode ? data.usedModel : null);
 
   } catch (e) {
     typing.classList.remove('visible');
@@ -2584,21 +2596,31 @@ async function handleCheatCode(cmd) {
       `  <span style="color:#6ef">//testvoucher</span>  → Test endpoint /verify\n` +
       `  <span style="color:#6ef">//testnotif</span>    → Test notifikasi Telegram\n` +
       `  <span style="color:#6ef">//sysinfo</span>      → Info Worker & konfigurasi\n` +
-      `  <span style="color:#6ef">//devmode</span>      → Toggle dev model switcher\n` +
+      `  <span style="color:#6ef">//devmode</span>      → Toggle dev mode (usedModel label + switcher)\n` +
       `  <span style="color:#6ef">//help</span>         → Tampilkan menu ini`
     );
     return;
   }
 
   if (cmd === '//devmode') {
+    if (currentUser !== 'haeru damiyati') {
+      addDiagMessage(`<span style="color:#f66">⛔ Akses ditolak.</span> Dev mode hanya untuk Haeru.`);
+      return;
+    }
+    isDevMode = !isDevMode;
     const bar = document.getElementById('devModelBar');
-    const isVisible = bar.classList.toggle('visible');
-    if (isVisible) {
-      addDiagMessage(`<span style="color:#4f4">🛠 Dev Mode ON</span> — Model switcher aktif di atas input.\nPilih model untuk force ke model tertentu, atau pilih <b>auto</b> untuk pakai fallback chain.`);
+    if (bar) bar.classList.toggle('visible', isDevMode);
+    if (isDevMode) {
+      addDiagMessage(
+        `<span style="color:#4f4">🛠 Dev Mode ON</span>\n` +
+        `  • Label <b>usedModel</b> muncul di bawah setiap bubble bot\n` +
+        `  • Model switcher aktif di atas input chat\n` +
+        `  • Pilih <b>auto</b> untuk fallback chain normal`
+      );
     } else {
-      // Reset ke auto saat dimatikan
-      document.getElementById('devModelSelect').value = 'auto';
-      addDiagMessage(`<span style="color:#fa4">🛠 Dev Mode OFF</span> — Kembali ke fallback chain normal.`);
+      const sel = document.getElementById('devModelSelect');
+      if (sel) sel.value = 'auto';
+      addDiagMessage(`<span style="color:#fa4">🛠 Dev Mode OFF</span> — Kembali ke mode normal.`);
     }
     return;
   }
