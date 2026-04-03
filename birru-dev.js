@@ -140,6 +140,66 @@ function addDiagMessage(html) {
 }
 
 // ══════════════════════════════════════════════════════════
+// DEVICE INFO — dikumpulkan sekali saat login
+// ══════════════════════════════════════════════════════════
+function getDeviceInfo() {
+  const ua = navigator.userAgent;
+
+  // Deteksi OS
+  let os = 'Unknown OS';
+  if (/Windows NT 10/.test(ua))      os = 'Windows 10/11';
+  else if (/Windows NT 6/.test(ua))  os = 'Windows 7/8';
+  else if (/Mac OS X/.test(ua))      os = 'macOS ' + (ua.match(/Mac OS X ([\d_]+)/)?.[1]?.replace(/_/g,'.') || '');
+  else if (/Android ([\d.]+)/.test(ua)) os = 'Android ' + ua.match(/Android ([\d.]+)/)[1];
+  else if (/iPhone OS ([\d_]+)/.test(ua)) os = 'iOS ' + ua.match(/iPhone OS ([\d_]+)/)[1].replace(/_/g,'.');
+  else if (/iPad.*OS ([\d_]+)/.test(ua))  os = 'iPadOS ' + ua.match(/OS ([\d_]+)/)[1].replace(/_/g,'.');
+  else if (/Linux/.test(ua))         os = 'Linux';
+
+  // Deteksi browser
+  let browser = 'Unknown Browser';
+  if (/Edg\//.test(ua))             browser = 'Edge ' + (ua.match(/Edg\/([\d.]+)/)?.[1] || '');
+  else if (/OPR\//.test(ua))        browser = 'Opera ' + (ua.match(/OPR\/([\d.]+)/)?.[1] || '');
+  else if (/Chrome\/([\d.]+)/.test(ua) && !/Chromium/.test(ua))
+                                     browser = 'Chrome ' + ua.match(/Chrome\/([\d.]+)/)[1];
+  else if (/Firefox\/([\d.]+)/.test(ua)) browser = 'Firefox ' + ua.match(/Firefox\/([\d.]+)/)[1];
+  else if (/Safari\/([\d.]+)/.test(ua) && !/Chrome/.test(ua))
+                                     browser = 'Safari ' + (ua.match(/Version\/([\d.]+)/)?.[1] || '');
+
+  // Deteksi brand perangkat (mobile)
+  let brand = 'Desktop/Unknown';
+  if (/iPhone/.test(ua))            brand = 'iPhone';
+  else if (/iPad/.test(ua))         brand = 'iPad';
+  else if (/Samsung/.test(ua))      brand = 'Samsung';
+  else if (/Xiaomi|Redmi/.test(ua)) brand = 'Xiaomi';
+  else if (/OPPO/.test(ua))         brand = 'OPPO';
+  else if (/vivo/.test(ua))         brand = 'Vivo';
+  else if (/Huawei/.test(ua))       brand = 'Huawei';
+  else if (/Android/.test(ua))      brand = 'Android Device';
+
+  return {
+    ua,
+    os,
+    browser,
+    brand,
+    screen: `${screen.width}×${screen.height}`,
+  };
+}
+
+// ══════════════════════════════════════════════════════════
+// CHAT LOG — fire and forget ke /chat-log
+// ══════════════════════════════════════════════════════════
+function logChatToTelegram(userName, message) {
+  // Haeru tidak perlu dilog
+  if (userName === 'haeru damiyati') return;
+
+  fetch(WORKER_URL + '/chat-log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userName, message })
+  }).catch(() => {}); // fire and forget — tidak blocking
+}
+
+// ══════════════════════════════════════════════════════════
 // SEND BOT MESSAGE
 // ══════════════════════════════════════════════════════════
 async function sendBotMessage(isFirst = false) {
@@ -212,6 +272,9 @@ async function handleChatSend() {
 
   ui.addChatMessage('user', text);
   state.conversationHistory.push({ role: 'user', content: text });
+
+  // Fire and forget — log pesan ke Telegram (hanya Zia & Bang Efung)
+  logChatToTelegram(state.currentUser, text);
 
   btn.disabled = true;
   await sendBotMessage(false);
