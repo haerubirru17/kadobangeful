@@ -294,12 +294,25 @@ async function handleCheatCode(cmd) {
       `  <span style="color:#6ef">  //testai</span>      → Test semua model (Gemini + Groq)\n` +
       `  <span style="color:#6ef">//testvoucher</span>  → Test endpoint /verify\n` +
       `  <span style="color:#6ef">//testnotif</span>    → Test notifikasi Telegram\n` +
+      `  <span style="color:#6ef">//testformat</span>   → Test rendering markdown di bubble bot\n` +
       `  <span style="color:#6ef">//quotainfo</span>    → Cek sisa kuota Groq\n` +
       `  <span style="color:#6ef">//sysinfo</span>      → Info Worker & konfigurasi\n` +
       `  <span style="color:#6ef">//devmode</span>      → Toggle dev mode (usedModel + switcher)\n` +
       `  <span style="color:#6ef">//clearhistory</span> → Reset conversation history\n` +
       `  <span style="color:#6ef">//help</span>         → Tampilkan menu ini`
     );
+    return;
+  }
+
+  // ── //testformat ──────────────────────────────────────────
+  if (cmd === '//testformat') {
+    const ui = window.Birru.ui;
+    ui.addChatMessage('bot',
+      `Ini *italic* dan ini **bold** dan ini _italic juga_.\n\n` +
+      `Haeru itu *pendiem* — tapi bukan berarti dia nggak perhatiin.\n\n` +
+      `Kata Haeru sendiri sih, ini *masih banyak kurangnya*. Dan ini **penting banget** kalau mau paham dia.`
+    );
+    addDiagMessage(`<span style="color:#4f4">✓ Test format selesai.</span>\n  Cek bubble bot di atas — italic, bold, dan kombinasinya harus terrender dengan benar.`);
     return;
   }
 
