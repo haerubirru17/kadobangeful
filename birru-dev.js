@@ -308,11 +308,21 @@ async function handleCheatCode(cmd) {
   if (cmd === '//testformat') {
     const ui = window.Birru.ui;
     ui.addChatMessage('bot',
-      `Ini *italic* dan ini **bold** dan ini _italic juga_.\n\n` +
-      `Haeru itu *pendiem* — tapi bukan berarti dia nggak perhatiin.\n\n` +
-      `Kata Haeru sendiri sih, ini *masih banyak kurangnya*. Dan ini **penting banget** kalau mau paham dia.`
+      `Ini yang aku tau:\n\n` +
+      `1. **Mamah (Mursani)** — pusat dari semuanya.\n` +
+      `2. **Bang Efung (Saeful Bahri)** — anak pertama, yang nikah sama Kak Zia.\n` +
+      `3. **Bang Alim (Abdul Halim)** — anak kedua, 27 tahun.\n` +
+      `4. **Haeru** — anak ketiga, yang bikin aku. 23 tahun.\n` +
+      `5. **Syarif** — si bungsu, 16 tahun.`
     );
-    addDiagMessage(`<span style="color:#4f4">✓ Test format selesai.</span>\n  Cek bubble bot di atas — italic, bold, dan kombinasinya harus terrender dengan benar.`);
+    ui.addChatMessage('bot',
+      `Ini teks biasa tanpa formatting — plain text yang natural. Tidak ada * atau _ disini.`
+    );
+    addDiagMessage(
+      `<span style="color:#4f4">✓ Test format selesai.</span>\n` +
+      `  Bubble 1: numbered list dengan bold nama — angka warna emas, nama tebal.\n` +
+      `  Bubble 2: plain text — tidak ada formatting sama sekali.`
+    );
     return;
   }
 
