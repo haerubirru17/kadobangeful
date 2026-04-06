@@ -2235,9 +2235,23 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null, used
   const modelBadgeHtml = usedModel
     ? `<div class="dev-model-tag">🛠 ${usedModel}</div>`
     : '';
+
+  // Markdown parser ringan — hanya untuk bubble bot
+  function parseMarkdown(raw) {
+    return raw
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')  // **bold**
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')               // *italic*
+      .replace(/_(.+?)_/g, '<em>$1</em>')                 // _italic_
+      .replace(/\n/g, '<br>');
+  }
+
+  const renderedText = role === 'bot'
+    ? parseMarkdown(text)
+    : text.replace(/\n/g, '<br>');
+
   el.innerHTML = `
     <div class="msg-label">${label}</div>
-    <div class="${bubbleClass}">${quoteHtml}${text.replace(/\n/g, '<br>')}</div>
+    <div class="${bubbleClass}">${quoteHtml}${renderedText}</div>
     ${modelBadgeHtml}
   `;
   container.appendChild(el);
