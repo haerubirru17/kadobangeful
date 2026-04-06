@@ -866,6 +866,20 @@ body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
+/* Numbered list item di dalam bubble bot */
+.msg-list-item {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.15rem 0;
+  line-height: 1.6;
+}
+.msg-list-num {
+  color: #c9a96e;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 1.2rem;
+}
+
 /* Bubble user — kanan, warna emas hangat */
 .msg-bubble.user-bubble {
   font-family: 'Lato', sans-serif;
@@ -2236,13 +2250,29 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null, used
     ? `<div class="dev-model-tag">🛠 ${usedModel}</div>`
     : '';
 
-  // Markdown parser ringan — hanya untuk bubble bot
+  // Parser bubble bot — bold, numbered list, strip * liar
   function parseMarkdown(raw) {
-    return raw
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')  // **bold**
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')               // *italic*
-      .replace(/_(.+?)_/g, '<em>$1</em>')                 // _italic_
-      .replace(/\n/g, '<br>');
+    // Proses per baris untuk handle numbered list
+    const lines = raw.split('\n');
+    const processedLines = lines.map(line => {
+      // Numbered list: "1. **Nama** — deskripsi" → item dengan bold
+      const listMatch = line.match(/^(\d+)\.\s+(.+)$/);
+      if (listMatch) {
+        const content = listMatch[2]
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '$1')   // strip * liar di dalam list item
+          .replace(/_(.+?)_/g, '$1');
+        return `<div class="msg-list-item"><span class="msg-list-num">${listMatch[1]}.</span><span>${content}</span></div>`;
+      }
+      // Baris biasa — bold saja, strip * dan _ liar
+      return line
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*\*|\*/g, '')          // strip * yang tidak berpasangan
+        .replace(/_(.+?)_/g, '$1')        // strip _ yang tidak dirender
+        .replace(/\(i\)/g, '');           // strip (i) yang salah format
+    });
+
+    return processedLines.join('<br>');
   }
 
   const renderedText = role === 'bot'
