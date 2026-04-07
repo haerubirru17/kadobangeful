@@ -310,8 +310,7 @@ KAMU SEDANG BERBICARA DENGAN HAERU SENDIRI
   }
 
   return base;
-}}
-
+}
 
 // ══════════════════════════════════════════════════════════
 // 5. SKRIP INTRO BIRRU
