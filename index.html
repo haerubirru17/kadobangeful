@@ -2285,6 +2285,7 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null, used
     ${modelBadgeHtml}
   `;
   container.appendChild(el);
+  playBubbleSound(role); // Suara pop saat bubble muncul
 
   const ls = document.getElementById('letter-screen');
   setTimeout(() => ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' }), 100);
@@ -2591,7 +2592,47 @@ function skipBirru() {
   setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
 }
 
+// ══════════════════════════════════════════════════════════
+// BUBBLE SOUND — Web Audio API
+// AudioContext diinisialisasi saat user klik LANJUT (exitBirru)
+// ══════════════════════════════════════════════════════════
+let bubbleAudioCtx = null;
+
+function initBubbleAudio() {
+  if (bubbleAudioCtx) return;
+  bubbleAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playBubbleSound(role) {
+  if (!bubbleAudioCtx) return;
+  if (bubbleAudioCtx.state === 'suspended') bubbleAudioCtx.resume();
+
+  const osc  = bubbleAudioCtx.createOscillator();
+  const gain = bubbleAudioCtx.createGain();
+
+  // Bot bubble — pop lembut, frekuensi rendah
+  // User bubble — pop sedikit lebih tinggi
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(
+    role === 'bot' ? 440 : 600,
+    bubbleAudioCtx.currentTime
+  );
+  osc.frequency.exponentialRampToValueAtTime(
+    role === 'bot' ? 220 : 300,
+    bubbleAudioCtx.currentTime + 0.08
+  );
+
+  gain.gain.setValueAtTime(0.08, bubbleAudioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, bubbleAudioCtx.currentTime + 0.08);
+
+  osc.connect(gain);
+  gain.connect(bubbleAudioCtx.destination);
+  osc.start();
+  osc.stop(bubbleAudioCtx.currentTime + 0.08);
+}
+
 function exitBirru() {
+  initBubbleAudio(); // Inisialisasi AudioContext saat user klik LANJUT
   const screen = document.getElementById('birru-screen');
   screen.classList.add('exit');
   setTimeout(() => screen.classList.add('gone'), 1200);
