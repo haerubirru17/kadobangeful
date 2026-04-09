@@ -1927,6 +1927,7 @@ async function handleVerify() {
   btn.disabled = false;
   btn.textContent = 'Buka →';
   currentUser = matched;
+  playUserSound('open'); // Suara saat nama berhasil dimasukkan
 
   // Kirim notifikasi Telegram (background, tidak blokir UI)
   sendTelegramNotification(matched);
@@ -2285,7 +2286,7 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null, used
     ${modelBadgeHtml}
   `;
   container.appendChild(el);
-  playBubbleSound(role); // Suara pop saat bubble muncul
+  playUserSound(role === 'user' ? 'send' : 'receive'); // Suara MP3 per user
 
   const ls = document.getElementById('letter-screen');
   setTimeout(() => ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' }), 100);
@@ -2593,7 +2594,31 @@ function skipBirru() {
 }
 
 // ══════════════════════════════════════════════════════════
-// BUBBLE SOUND — Web Audio API
+// USER SOUND — MP3 custom per user dari folder sounds/
+// ══════════════════════════════════════════════════════════
+const SOUND_MAP = {
+  'saeful bahri': {
+    open:    'sounds/saefulbahri-open.mp3',
+    send:    'sounds/saefulbahri-sendsound.mp3',
+    receive: 'sounds/saefulbahri-recivesound.mp3',
+  },
+  'amriah fauziah': {
+    send:    'sounds/amriahfauziah-sendsound.mp3',
+    receive: 'sounds/amriahfauziah-recivesound.mp3',
+  },
+};
+
+function playUserSound(type) {
+  const user = (typeof currentUser === 'string') ? currentUser.toLowerCase() : null;
+  const map = SOUND_MAP[user];
+  if (!map || !map[type]) return;
+  const audio = new Audio(map[type]);
+  audio.volume = 0.85;
+  audio.play().catch(() => {}); // abaikan jika autoplay diblokir browser
+}
+
+// ══════════════════════════════════════════════════════════
+// BUBBLE SOUND — Web Audio API (fallback ringan)
 // AudioContext diinisialisasi saat user klik LANJUT (exitBirru)
 // ══════════════════════════════════════════════════════════
 let bubbleAudioCtx = null;
@@ -2601,34 +2626,6 @@ let bubbleAudioCtx = null;
 function initBubbleAudio() {
   if (bubbleAudioCtx) return;
   bubbleAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-}
-
-function playBubbleSound(role) {
-  if (!bubbleAudioCtx) return;
-  if (bubbleAudioCtx.state === 'suspended') bubbleAudioCtx.resume();
-
-  const osc  = bubbleAudioCtx.createOscillator();
-  const gain = bubbleAudioCtx.createGain();
-
-  // Bot bubble — pop lembut, frekuensi rendah
-  // User bubble — pop sedikit lebih tinggi
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(
-    role === 'bot' ? 440 : 600,
-    bubbleAudioCtx.currentTime
-  );
-  osc.frequency.exponentialRampToValueAtTime(
-    role === 'bot' ? 220 : 300,
-    bubbleAudioCtx.currentTime + 0.08
-  );
-
-  gain.gain.setValueAtTime(0.08, bubbleAudioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, bubbleAudioCtx.currentTime + 0.08);
-
-  osc.connect(gain);
-  gain.connect(bubbleAudioCtx.destination);
-  osc.start();
-  osc.stop(bubbleAudioCtx.currentTime + 0.08);
 }
 
 function exitBirru() {
