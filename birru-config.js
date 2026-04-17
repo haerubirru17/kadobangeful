@@ -603,5 +603,5 @@ const HAERU_CAMEO = {
     "Btw, di aplikasi ini terdapat AI assistant bernama Birru yang saya masukkan ke program kado ini, tapi namanya juga AI kadang-kadang ngomongnya emang sok iye die… jadi kalau ngomongnya terlalu di ini-iniin, tolong dimaklumi kak..",
     "Itu aja yang bisa Haeru kasih. Sekali lagi, terima kasih banyak… dan selamat datang di keluarga kami. 🤍"
   ],
-  birruReply: "Heh, sok iye katanya — padahal dia sendiri yang ngajarin aku ngomong. 😂 Ya sudah, kritiknya aku tamping. Haeru-nya udah kabur duluan nih, Kak — tapi aku masih di sini. Mau tanya apa, cerita apa, aku dengerin di chat ini. 🤍"
+  birruReply: "Heh, sok iye katanya — padahal dia sendiri yang ngajarin aku ngomong. 😂 Ya sudah, kritiknya aku tamping. Haeru-nya udah kabur duluan nih, Kak."
 };
