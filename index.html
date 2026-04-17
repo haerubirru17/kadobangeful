@@ -1111,6 +1111,78 @@ body.chat-active .letter-paper {
   margin-bottom: 0.4rem;
 }
 
+/* ── Audio Player Bubble ── */
+.audio-player-bubble {
+  background: rgba(250,246,238,0.95);
+  border: 1px solid rgba(201,169,110,0.3);
+  border-radius: 4px 14px 14px 4px;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  max-width: 280px;
+}
+.audio-player-title {
+  font-size: 0.75rem;
+  font-family: 'Lato', sans-serif;
+  color: #6b5030;
+  margin-bottom: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.audio-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.audio-play-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #c9a96e;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2c1810;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.1s;
+  line-height: 1;
+}
+.audio-play-btn:hover { background: #b8944f; }
+.audio-play-btn:active { transform: scale(0.95); }
+.audio-progress-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.audio-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(201,169,110,0.25);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.audio-progress-fill {
+  height: 100%;
+  background: #c9a96e;
+  border-radius: 2px;
+  width: 0%;
+  pointer-events: none;
+}
+.audio-time {
+  font-size: 0.6rem;
+  font-family: 'Lato', monospace;
+  color: rgba(107,80,48,0.55);
+  letter-spacing: 0.03em;
+}
+
 /* ── WA Button ── */
 .wa-invite-wrap {
   margin-top: 1.4rem;
@@ -2067,7 +2139,9 @@ function showGiftCards() {
     }
 
     currentChipIndex = 0;
-    setTimeout(() => showSuggestionChips(), 600);
+    if (currentUser === 'haeru damiyati') {
+      setTimeout(() => showSuggestionChips(), 600);
+    }
   }, 1800);
 }
 
@@ -2363,6 +2437,181 @@ function addBirruInvite() {
 }
 
 // ══════════════════════════════════════════════════════════
+// AUDIO PLAYER
+// ══════════════════════════════════════════════════════════
+
+// Auto-derive judul dari filename
+function titleFromFilename(filename) {
+  return filename
+    .replace(/\.mp3$/i, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+let currentAudio = null;
+let currentAudioId = 0;
+if (!window._audioMap) window._audioMap = {};
+
+function addAudioPlayerBubble(filename) {
+  const title = titleFromFilename(filename);
+  const id = ++currentAudioId;
+  const container = document.getElementById('chatMessages');
+  const el = document.createElement('div');
+  el.className = 'letter-message bot-msg';
+  el.innerHTML = `
+    <div class="msg-label">✦ Birru (AI dari Haeru)</div>
+    <div class="audio-player-bubble" id="player-${id}">
+      <div class="audio-player-title">🎵 ${title}</div>
+      <div class="audio-player-controls">
+        <button class="audio-play-btn" id="playbtn-${id}" onclick="toggleAudio(${id})">▶</button>
+        <div class="audio-progress-wrap">
+          <div class="audio-progress-bar" id="progress-${id}" onclick="seekAudio(event,${id})">
+            <div class="audio-progress-fill" id="fill-${id}"></div>
+          </div>
+          <span class="audio-time" id="time-${id}">0:00 / 0:00</span>
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(el);
+  const ls = document.getElementById('letter-screen');
+  setTimeout(() => ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' }), 100);
+
+  const audio = new Audio(`sounds/music/${filename}`);
+  audio._birruId = id;
+  audio._filename = filename;
+  audio.addEventListener('timeupdate',    () => updateAudioProgress(id, audio));
+  audio.addEventListener('loadedmetadata',() => updateAudioProgress(id, audio));
+  audio.addEventListener('ended',         () => onAudioEnded(id, audio));
+  window._audioMap[id] = audio;
+  return id;
+}
+
+function toggleAudio(id) {
+  const audio = window._audioMap[id];
+  if (!audio) return;
+  const btn = document.getElementById(`playbtn-${id}`);
+
+  // Pause audio lain yang sedang main
+  if (currentAudio && currentAudio !== audio) {
+    currentAudio.pause();
+    const otherId = currentAudio._birruId;
+    const otherBtn = document.getElementById(`playbtn-${otherId}`);
+    if (otherBtn) otherBtn.textContent = '▶';
+  }
+
+  if (audio.paused) {
+    audio.play().catch(() => {});
+    if (btn) btn.textContent = '⏸';
+    currentAudio = audio;
+  } else {
+    audio.pause();
+    if (btn) btn.textContent = '▶';
+    currentAudio = null;
+  }
+}
+
+function seekAudio(event, id) {
+  const audio = window._audioMap[id];
+  const bar   = document.getElementById(`progress-${id}`);
+  if (!audio || !bar || !audio.duration) return;
+  const rect  = bar.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  audio.currentTime = ratio * audio.duration;
+}
+
+function updateAudioProgress(id, audio) {
+  const fill = document.getElementById(`fill-${id}`);
+  const time = document.getElementById(`time-${id}`);
+  if (!fill || !time) return;
+  const cur = audio.currentTime || 0;
+  const dur = audio.duration || 0;
+  fill.style.width = (dur ? (cur / dur) * 100 : 0) + '%';
+  time.textContent  = `${fmtTime(cur)} / ${fmtTime(dur)}`;
+}
+
+function fmtTime(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+}
+
+async function onAudioEnded(id, audio) {
+  const btn = document.getElementById(`playbtn-${id}`);
+  if (btn) btn.textContent = '▶';
+  currentAudio = null;
+  await new Promise(r => setTimeout(r, 800));
+  await simulateTyping('Sudahhh.. mau yang lain? 🎵');
+}
+
+function addSongListBubble() {
+  const playlist = (typeof MUSIC_PLAYLIST !== 'undefined') ? MUSIC_PLAYLIST : [];
+  if (!playlist.length) {
+    addChatMessage('bot', 'Maaf, belum ada lagu yang tersedia. Haeru belum memasukkan daftarnya. 🙏');
+    return;
+  }
+  const items = playlist.map((f, i) => `${i + 1}. ${titleFromFilename(f)}`).join('\n');
+  addChatMessage('bot', `Ini yang aku punya —\n${items}\n\nMau yang mana?`);
+}
+
+// Detect intent musik dari teks user
+function detectMusicIntent(text) {
+  const t = text.toLowerCase();
+  const listKw  = ['pilih sendiri', 'ada pilihan', 'daftar lagu', 'lagu apa aja', 'lagu apa saja', 'ada lagu lain', 'lagu lainnya', 'mau yang lain', 'ada lagi', 'list lagu', 'lagu lain'];
+  const playKw  = ['mainkan musik', 'putar musik', 'minta musik', 'play musik', 'musik dong', 'mainkan lagu', 'putar lagu', 'minta lagu', 'play lagu', 'lagu dong', 'mainkan piano', 'putar piano', 'piano dong', 'mainkan piano', 'dengerin musik', 'dengerin lagu', 'pengen denger musik', 'pengen denger lagu'];
+  const stopKw  = ['stop musik', 'hentikan musik', 'pause musik', 'stop lagu', 'hentikan lagu', 'pause lagu'];
+  if (listKw.some(k => t.includes(k)))   return 'list';
+  if (stopKw.some(k => t.includes(k)))   return 'stop';
+  if (playKw.some(k => t.includes(k)))   return 'play';
+  // Deteksi pilih nomor lagu (hanya angka)
+  if (/^\d+$/.test(text.trim()))          return 'select';
+  return null;
+}
+
+async function handleMusicIntent(intent, text) {
+  const playlist = (typeof MUSIC_PLAYLIST !== 'undefined') ? MUSIC_PLAYLIST : [];
+
+  if (intent === 'list') {
+    addSongListBubble();
+    return;
+  }
+
+  if (intent === 'select') {
+    const idx = parseInt(text.trim(), 10) - 1;
+    if (!playlist.length) {
+      addChatMessage('bot', 'Belum ada daftar lagu, Kak. 🙏');
+    } else if (idx >= 0 && idx < playlist.length) {
+      await simulateTyping('Ini dia. 🎵');
+      addAudioPlayerBubble(playlist[idx]);
+    } else {
+      addChatMessage('bot', 'Nomornya di luar daftar, Kak — ketik sesuai yang aku tampilkan ya. 😄');
+    }
+    return;
+  }
+
+  if (intent === 'play') {
+    if (!playlist.length) {
+      addChatMessage('bot', 'Maaf, belum ada lagu yang bisa dimainkan sekarang. 🙏');
+      return;
+    }
+    await simulateTyping('Ini dia. 🎵');
+    addAudioPlayerBubble(playlist[0]);
+    return;
+  }
+
+  if (intent === 'stop') {
+    if (currentAudio) {
+      currentAudio.pause();
+      const btn = document.getElementById(`playbtn-${currentAudio._birruId}`);
+      if (btn) btn.textContent = '▶';
+      currentAudio = null;
+    }
+    addChatMessage('bot', 'Oke, sudah dipause. 😄');
+    return;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
 // HAERU CAMEO
 // ══════════════════════════════════════════════════════════
 
@@ -2385,6 +2634,7 @@ function addHaeruMessage(text) {
     <div class="haeru-bubble">${text.replace(/\n/g, '<br>')}</div>
   `;
   container.appendChild(el);
+  playUserSound('receive'); // suara tiap bubble Haeru masuk
   const ls = document.getElementById('letter-screen');
   setTimeout(() => ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' }), 100);
 }
@@ -2484,6 +2734,17 @@ async function runHaeuCameo() {
   const quotedMsg = messages[2] || messages[messages.length - 1];
   addChatMessage('bot', HAERU_CAMEO.birruReply, quotedMsg, 'Haeru');
   conversationHistory.push({ role: 'assistant', content: HAERU_CAMEO.birruReply });
+
+  // 8. Bubble kedua Birru — sapaan + piano disebut natural, setelah jeda singkat
+  await new Promise(r => setTimeout(r, 1800));
+  birruTyping.classList.add('visible');
+  ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' });
+  await new Promise(r => setTimeout(r, 2800));
+  birruTyping.classList.remove('visible');
+  await new Promise(r => setTimeout(r, 180));
+  const pianoMsg = "Senang akhirnya bisa ngobrol, Kak. Kalau mau cerita, tanya soal keluarga, atau sekadar ngobrol santai — aku di sini. Oh iya, aku juga bisa mainkan piano kalau mau, boleh banget didengerin kapanpun. 🎵";
+  addChatMessage('bot', pianoMsg);
+  conversationHistory.push({ role: 'assistant', content: pianoMsg });
 }
 
 function addHaeruReadReceipt() {
