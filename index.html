@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>Untuk Bang Efung & Kak Zia 💍</title>
+<title>Untuk Bang Efung & Kak Ziah 💍</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:wght@300;400;700&family=Dancing+Script:wght@500;600&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
 
@@ -920,6 +920,12 @@ body {
   margin-bottom: 0.15rem;
 }
 
+/* Bubble bot consecutive — label hanya muncul di yang pertama */
+.letter-message.bot-msg + .letter-message.bot-msg .msg-label { display: none; }
+.letter-message.bot-msg + .letter-message.bot-msg .msg-bubble {
+  border-radius: 4px 14px 14px 4px;
+}
+
 /* Untuk kompatibilitas backward — msg-text tetap ada */
 .msg-text {
   font-family: 'Playfair Display', serif;
@@ -1707,7 +1713,7 @@ body.chat-active .letter-paper {
       </div>
       <div class="envelope-address">
         <span class="envelope-to">Kepada yang terhormat</span>
-        <span class="envelope-name">Bang Efung & Kak Zia</span>
+        <span class="envelope-name">Bang Efung & Kak Ziah</span>
       </div>
     </div>
   </div>
@@ -2316,7 +2322,7 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null, used
   const el = document.createElement('div');
   el.className = `letter-message ${role === 'bot' ? 'bot-msg' : 'user-msg'}`;
 
-  const label = role === 'bot' ? '✦ Birru (AI dari Haeru)' : 'Kamu';
+  const label = role === 'bot' ? '✦ Birru' : 'Kamu';
   const bubbleClass = role === 'bot' ? 'msg-bubble' : 'msg-bubble user-bubble';
   const quoteHtml = quotedText
     ? `<div class="msg-quote"><span class="msg-quote-sender">${quotedSender || 'Haeru'}</span>${quotedText}</div>`
@@ -2373,7 +2379,7 @@ function addVideoMessage() {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru (AI dari Haeru)</div>
+    <div class="msg-label">✦ Birru</div>
     <div class="msg-bubble">
       <div class="chat-video-label">🎬 Video ucapan dari keluarga</div>
       <div class="chat-video-wrap">
@@ -2395,7 +2401,7 @@ function addWaButton(userName) {
 
   const messages = {
     "saeful bahri": `Halo Haeru! Bang Efung di sini. Udah buka kado digitalmu — makasih banyak ya, Hae 🤍`,
-    "amriah fauziah": `Halo Haeru! Ini Kak Zia. Baru buka kado dari kamu — terima kasih ya, sangat berkesan 🤍`,
+    "amriah fauziah": `Halo Haeru! Ini Kak Ziah. Baru buka kado dari kamu — terima kasih ya, sangat berkesan 🤍`,
     "haeru damiyati": `Halo Haeru, ini kamu sendiri lagi ngetes 😅`
   };
 
@@ -2406,7 +2412,7 @@ function addWaButton(userName) {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru (AI dari Haeru)</div>
+    <div class="msg-label">✦ Birru</div>
     <div class="msg-bubble">
       <div class="wa-invite-wrap">
         <span class="wa-invite-label">Kalau kamu mau langsung balas ke Haeru — tombol ini akan membuka WhatsApp dengan pesan yang sudah siap dikirim. ✨</span>
@@ -2426,7 +2432,7 @@ function addBirruInvite() {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru (AI dari Haeru)</div>
+    <div class="msg-label">✦ Birru</div>
     <div class="msg-bubble">
       <div class="birru-invite-msg">Silahkan tanya apapun — aku, Birru, siap membantu. 🤍</div>
     </div>
@@ -2459,7 +2465,7 @@ function addAudioPlayerBubble(filename) {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru (AI dari Haeru)</div>
+    <div class="msg-label">✦ Birru</div>
     <div class="audio-player-bubble" id="player-${id}">
       <div class="audio-player-title">🎵 ${title}</div>
       <div class="audio-player-controls">
@@ -2714,7 +2720,7 @@ async function runHaeuCameo() {
     }
   }
 
-  // 4. Tunggu sinyal Kak Zia sudah baca (max 20 detik)
+  // 4. Tunggu sinyal Kak Ziah sudah baca (max 20 detik)
   await waitForReadSignal(20000);
   addHaeruReadReceipt();
 
