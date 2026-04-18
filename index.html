@@ -861,9 +861,9 @@ body {
   font-size: 0.88rem;
   color: #3d2c1e;
   line-height: 1.8;
-  background: rgba(250,246,238,0.85);
-  border: 1px solid rgba(201,169,110,0.25);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  background: linear-gradient(135deg, #e8d5b0, #ddc89a);
+  border: 1px solid rgba(201,169,110,0.35);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
 /* Numbered list item di dalam bubble bot */
@@ -1302,6 +1302,36 @@ body.chat-active .letter-paper {
   transform: translateY(-1px);
 }
 
+/* ── Volume Announcement ── */
+#volume-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 500;
+  background: rgba(44,24,16,0.93);
+  border: 1px solid rgba(201,169,110,0.35);
+  border-radius: 10px;
+  padding: 0.75rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.78rem;
+  color: #f5e6c8;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+#volume-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.volume-toast-icon { font-size: 1.1rem; }
+
 /* ══════════════════════════════
    MOBILE OPTIMIZATION
 ══════════════════════════════ */
@@ -1691,6 +1721,12 @@ body.chat-active .letter-paper {
      FLOATING PARTICLES
 ══════════════════════════════ -->
 <div class="particles" id="particles"></div>
+
+<!-- Volume Announcement Toast -->
+<div id="volume-toast">
+  <span class="volume-toast-icon">🔔</span>
+  Aktifkan volume untuk pengalaman terbaik
+</div>
 
 <!-- ══════════════════════════════
      PHASE 1 — ENVELOPE
@@ -2748,7 +2784,7 @@ async function runHaeuCameo() {
   await new Promise(r => setTimeout(r, 2800));
   birruTyping.classList.remove('visible');
   await new Promise(r => setTimeout(r, 180));
-  const pianoMsg = "Ngomong-ngomong, aku juga bisa mainkan piano kalau mau — boleh banget didengerin kapanpun. 🎵";
+  const pianoMsg = "Aku bisa temenin ngobrol, ceritain soal keluarga Haeru, atau mainkan piano buat nemenin momen ini. 🎵";
   addChatMessage('bot', pianoMsg);
   conversationHistory.push({ role: 'assistant', content: pianoMsg });
 }
@@ -2981,6 +3017,14 @@ window.Birru = {
 
 initLoader();
 createParticles();
+
+// Volume announcement — muncul 1.5s setelah halaman siap, auto-dismiss 4s
+setTimeout(() => {
+  const toast = document.getElementById('volume-toast');
+  if (!toast) return;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}, 1500);
 // runBirruSequence() ← TIDAK dipanggil di sini.
 //                      Dipanggil oleh initLoader() setelah loader hilang sempurna.
 
