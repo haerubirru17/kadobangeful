@@ -272,10 +272,33 @@ async function handleChatSend() {
 
   ui.addChatMessage('user', text);
 
+  // ── WA redirect mode — pesan langsung ke WA bukan AI ──
+  if (window._waRedirectMode) {
+    window._waRedirectMode = false;
+    document.getElementById('wa-mode-bar')?.classList.remove('visible');
+    const input = document.getElementById('chatInput');
+    if (input) input.placeholder = 'Tulis pesanmu...';
+    const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank');
+    ui.addChatMessage('bot', 'Pesannya sudah dibuka di WhatsApp — tinggal kirim aja, Kak. 🤍');
+    return;
+  }
+
   // Detect intent musik — handle langsung tanpa panggil API
   const musicIntent = (typeof detectMusicIntent === 'function') ? detectMusicIntent(text) : null;
   if (musicIntent) {
     await handleMusicIntent(musicIntent, text);
+    return;
+  }
+
+  // Detect intent kirim pesan ke Haeru
+  const waIntent = detectWaIntent(text);
+  if (waIntent) {
+    window._waRedirectMode = true;
+    document.getElementById('wa-mode-bar')?.classList.add('visible');
+    const input = document.getElementById('chatInput');
+    if (input) input.placeholder = 'Tulis pesan untuk Haeru...';
+    await simulateTyping('Boleh, Kak — tulis aja pesannya di bawah, nanti langsung aku terusin ke Haeru. 😄');
     return;
   }
 
@@ -318,7 +341,7 @@ async function handleCheatCode(cmd) {
     ui.addChatMessage('bot',
       `Ini yang aku tau:\n\n` +
       `1. **Mamah (Mursani)** — pusat dari semuanya.\n` +
-      `2. **Bang Efung (Saeful Bahri)** — anak pertama, yang nikah sama Kak Zia.\n` +
+      `2. **Bang Efung (Saeful Bahri)** — anak pertama, yang nikah sama Kak Ziah.\n` +
       `3. **Bang Alim (Abdul Halim)** — anak kedua, 27 tahun.\n` +
       `4. **Haeru** — anak ketiga, yang bikin aku. 23 tahun.\n` +
       `5. **Syarif** — si bungsu, 16 tahun.`
@@ -494,6 +517,17 @@ async function handleCheatCode(cmd) {
 // ══════════════════════════════════════════════════════════
 // EXPOSE ke window — dipanggil oleh event listeners index.html
 // ══════════════════════════════════════════════════════════
+
+function detectWaIntent(text) {
+  const t = text.toLowerCase();
+  const keywords = [
+    'kirim pesan ke haeru', 'pesan ke haeru', 'hubungi haeru',
+    'chat haeru', 'wa haeru', 'whatsapp haeru',
+    'bilang ke haeru', 'kasih tau haeru', 'mau ngomong ke haeru',
+    'mau pesan ke haeru', 'mau hubungi haeru', 'kontak haeru',
+  ];
+  return keywords.some(k => t.includes(k));
+}
 window.BirruDev = {
   sendBotMessage,
   handleChatSend,
