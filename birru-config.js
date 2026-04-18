@@ -18,6 +18,7 @@ const WA_NUMBER = "62895347201717";
 // Contoh: "badai tuan telah berlalu.mp3" → tampil sebagai "Badai Tuan Telah Berlalu"
 const MUSIC_PLAYLIST = [
   "cinta - Vinapanduwinata.mp3",
+    "kembang perawan.mp3",
 ];
 
 
