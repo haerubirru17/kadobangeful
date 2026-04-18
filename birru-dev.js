@@ -521,10 +521,22 @@ async function handleCheatCode(cmd) {
 function detectWaIntent(text) {
   const t = text.toLowerCase();
   const keywords = [
+    // eksplisit
     'kirim pesan ke haeru', 'pesan ke haeru', 'hubungi haeru',
     'chat haeru', 'wa haeru', 'whatsapp haeru',
-    'bilang ke haeru', 'kasih tau haeru', 'mau ngomong ke haeru',
-    'mau pesan ke haeru', 'mau hubungi haeru', 'kontak haeru',
+    'bilang ke haeru', 'kasih tau haeru', 'kontak haeru',
+    // natural / tidak langsung
+    'mau ngomong ke haeru', 'mau ngomong sama haeru',
+    'mau bilang ke haeru', 'mau bilang sama haeru',
+    'mau balas ke haeru', 'mau bales ke haeru',
+    'mau kirim ke haeru', 'pengen kirim ke haeru',
+    'pengen bilang ke haeru', 'pengen ngomong ke haeru',
+    'pengen hubungi haeru', 'pengen kontak haeru',
+    'bisa hubungi haeru', 'bisa chat haeru',
+    'ada cara hubungi haeru', 'ada cara kontak haeru',
+    'cara hubungi haeru', 'cara kontak haeru',
+    'mau nyampein ke haeru', 'mau sampaikan ke haeru',
+    'titip pesan ke haeru', 'titip ke haeru',
   ];
   return keywords.some(k => t.includes(k));
 }
