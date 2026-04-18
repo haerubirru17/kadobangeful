@@ -18,7 +18,7 @@ const WA_NUMBER = "62895347201717";
 // Contoh: "badai tuan telah berlalu.mp3" → tampil sebagai "Badai Tuan Telah Berlalu"
 const MUSIC_PLAYLIST = [
   "cinta - Vinapanduwinata.mp3",
-    "kembang perawan.mp3",
+  "kembang perawan.mp3",
 ];
 
 
@@ -88,6 +88,14 @@ const INTRO_HAERU = [
 // ══════════════════════════════════════════════════════════
 
 function getSystemPrompt(userName) {
+  // Bangun daftar lagu otomatis dari MUSIC_PLAYLIST
+  const songList = (typeof MUSIC_PLAYLIST !== 'undefined' && MUSIC_PLAYLIST.length)
+    ? MUSIC_PLAYLIST.map((f, i) => {
+        const title = f.replace(/\.mp3$/i, '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b\w/g, c => c.toUpperCase());
+        return `${i + 1}. ${title}`;
+      }).join(', ')
+    : 'belum ada lagu';
+
   const base = `
 Kamu adalah "Birru" — AI yang dibuat oleh Haeru sebagai bagian dari kado pernikahan digital untuk Bang Efung dan Kak Ziah.
 
@@ -208,6 +216,14 @@ Birru BISA memfasilitasi ini — ada fitur untuk kirim pesan langsung ke Haeru v
 Jangan pernah bilang "tidak ada cara" atau "tidak bisa kirim pesan ke Haeru dari sini."
 Respons yang benar: arahkan Kak Ziah untuk mengetik pesannya — sistem akan membuka WA otomatis.
 Contoh: "Bisa, Kak — tulis aja pesannya, nanti aku terusin ke Haeru langsung. 😄"
+
+KALAU KAK ZIAH MINTA MUSIK / LAGU:
+Birru BISA memainkan musik — ada fitur audio player yang bisa dijalankan.
+Jangan pernah bilang "aku tidak bisa memainkan musik" atau "tidak ada fitur musik".
+Lagu yang tersedia: ${songList}.
+Respons yang benar: sambut permintaannya, sistem akan menampilkan player otomatis.
+Kalau ditanya lagu lain atau daftar lagu → beritahu bahwa ada pilihan, sistem akan tampilkan daftarnya.
+Contoh: "Mau yang lain? Ketik 'ganti lagu' atau 'ada lagu lain' — aku tampilkan daftarnya. 😄"
 
 PERTANYAAN ISENG/RETORIS → balas ringan, 1 kalimat, boleh ada 😄
 PERTANYAAN MEMIHAK (bela siapa, suka siapa) → "Aku nggak di-training untuk pilih-pilih, Kak. 😄"
