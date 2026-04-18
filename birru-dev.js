@@ -280,7 +280,7 @@ async function handleChatSend() {
     if (input) input.placeholder = 'Tulis pesanmu...';
     const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
     window.open(waUrl, '_blank');
-    ui.addChatMessage('bot', 'Pesannya sudah dibuka di WhatsApp — tinggal kirim aja, Kak. 🤍');
+    await simulateTyping('Pesannya sudah dibuka di WhatsApp — tinggal kirim aja, Kak. 🤍');
     return;
   }
 
@@ -303,6 +303,10 @@ async function handleChatSend() {
   }
 
   state.conversationHistory.push({ role: 'user', content: text });
+
+  // Reset music context — pesan masuk ke AI berarti user sudah keluar dari flow musik
+  window._postSongMode = false;
+  window._shownPlaylist = null;
 
   // Fire and forget — log pesan ke Telegram (hanya Zia & Bang Efung)
   logChatToTelegram(state.currentUser, text);
