@@ -17,7 +17,7 @@ const WA_NUMBER = "62895347201717";
 // Judul otomatis diambil dari nama file — tidak perlu ditulis manual.
 // Contoh: "badai tuan telah berlalu.mp3" → tampil sebagai "Badai Tuan Telah Berlalu"
 const MUSIC_PLAYLIST = [
-  // "nama-file.mp3",
+  "cinta - Vinapanduwinata.mp3",
 ];
 
 
