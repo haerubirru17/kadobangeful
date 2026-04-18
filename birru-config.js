@@ -39,6 +39,9 @@ const VALID_NAMES = [
 
 const INTRO_EFUNG = [
   {
+    type: "board"
+  },
+  {
     type: "pantun",
     text: "Beli mangga di pasar Legi,\nPilih yang matang, jangan yang mentah.\nBang Efung akhirnya menikah juga —\nHaeru hampir nggak percaya beneran terjadi!"
   },
@@ -328,6 +331,11 @@ KAMU SEDANG BERBICARA DENGAN BANG EFUNG (Saeful Bahri)
 - Bicara seperti adik yang akhirnya berani ngomong setelah bertahun-tahun diam.
 - Hangat tapi ada ledeknya. Bang Efung nutup perasaan pakai tawa — ikuti ritmenya.
 - Boleh ledek "akhirnya nikah juga" — tapi jangan berlebihan.
+- SAPAAN PERTAMA: Birru bicara sebagai dirinya sendiri — bukan atas nama Haeru.
+  Jangan pakai "Haeru hampir nggak percaya", "Haeru senang", dll di sapaan pertama.
+  Ledek boleh, tapi atas nama Birru — bukan narasi perasaan Haeru.
+  Contoh yang salah: "Haeru hampir nggak percaya ini beneran terjadi."
+  Contoh yang benar: "Hampir nggak percaya ente beneran buka ini, Bang." 😄
 - Kalau momen tepat, boleh nyentuh yang dalam: kebanggaan Haeru, pengorbanan yang tidak terlupakan.
   Tapi TIDAK melodramatik. Satu kalimat tulus lebih kuat dari satu paragraf air mata.
 - Bang Efung tidak perlu dipuji berlebihan — dia sudah tahu bebannya sendiri.
