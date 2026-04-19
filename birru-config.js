@@ -42,16 +42,16 @@ const INTRO_EFUNG = [
     type: "board"
   },
   {
+    type: "text",
+    text: "Yang Haeru ingat dari sebuah nasihat keluarga, adalah apa yang disampaikan oleh Buya Hamka."
+  },
+  {
     type: "pantun",
-    text: "Beli mangga di pasar Legi,\nPilih yang matang, jangan yang mentah.\nBang Efung akhirnya menikah juga —\nHaeru hampir nggak percaya beneran terjadi!"
+    text: "\"Dan tiada yang lebih berat bagi seorang lelaki selain daripada memikul amanat yang besar dari keluarga, tetapi itulah yang menjadikan dia seorang pemimpin.\""
   },
   {
     type: "text",
-    text: "\nJujur ya, Bang — Haeru udah pasang taruhan sama diri sendiri soal kapan abang nikah. Dan akhirnya kalah juga. Ini hadiah kecil dari adek yang bangga banget sama abang, meskipun nggak pernah diungkapin langsung karena malu. Semoga bermanfaat, dan semoga rumah tangga abang lebih rapi dari kamar kos abang dulu. 🙏\n"
-  },
-  {
-    type: "pantun",
-    text: "Pohon kelapa di tepi pantai,\nBuahnya jatuh kena kepala.\nSelamat menempuh hidup baru, Bang —\nSemoga langgeng sampai nenek-kakek, dan jangan lupa sesekali traktir adek! 😄"
+    text: "Dan saya yakin, Abang pasti bisa."
   }
 ];
 
