@@ -1117,6 +1117,27 @@ body.chat-active .letter-paper {
   margin-bottom: 0.4rem;
 }
 
+.board-fireworks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 3px;
+}
+.fw-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: fwBurst var(--dur) ease-out var(--delay) infinite;
+}
+@keyframes fwBurst {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  80%  { opacity: 0.6; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
 /* ── Prayer Board (intro Bang Efung) ── */
 .prayer-board {
   margin: 0.5rem 0 1.5rem;
@@ -1126,6 +1147,7 @@ body.chat-active .letter-paper {
   border: 2px solid rgba(245,163,0,0.6);
   border-radius: 3px;
   overflow: hidden;
+  position: relative;
   box-shadow:
     0 0 18px rgba(245,163,0,0.25),
     0 0 40px rgba(245,163,0,0.10),
@@ -2192,6 +2214,7 @@ async function typewriterSegments(segments) {
           <span class="board-ticker-text">SELAMAT MENIKAH &nbsp;·&nbsp; SELAMAT MENIKAH &nbsp;·&nbsp; SELAMAT MENIKAH &nbsp;·&nbsp;</span>
         </div>
         <div class="board-content">
+          <canvas class="board-fw-canvas" width="300" height="80" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
           <div class="board-names">Bahri &amp; Ziah</div>
           <div class="board-divider"></div>
           <div class="board-date">17.04.2026</div>
@@ -2201,6 +2224,69 @@ async function typewriterSegments(segments) {
         </div>
       `;
       container.appendChild(board);
+
+      // Kembang api canvas
+      const canvas = board.querySelector('.board-fw-canvas');
+      const ctx = canvas.getContext('2d');
+      const colors = ['#f5a300','#fff8e7','#ff6b35','#ffd700','#ff4444','#44ffaa'];
+
+      function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+      function launchFirework() {
+        const bw = canvas.offsetWidth || 300;
+        const bh = canvas.offsetHeight || 80;
+        // Posisi ledakan hanya di sisi kiri dan kanan (bukan tengah)
+        const side = Math.random() < 0.5 ? 'left' : 'right';
+        const x = side === 'left' ? randomBetween(10, bw * 0.28) : randomBetween(bw * 0.72, bw - 10);
+        const y = randomBetween(bh * 0.15, bh * 0.85);
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const particles = 14 + Math.floor(Math.random() * 8);
+        const duration = 600 + Math.random() * 400;
+        const startTime = performance.now();
+
+        const pts = Array.from({ length: particles }, () => {
+          const angle = (Math.PI * 2 * Math.random());
+          const speed = randomBetween(18, 50);
+          return { vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed };
+        });
+
+        function draw(now) {
+          const t = (now - startTime) / duration;
+          if (t >= 1) return;
+          pts.forEach(p => {
+            const px = x + p.vx * t;
+            const py = y + p.vy * t + 30 * t * t; // gravity
+            const alpha = 1 - t;
+            ctx.beginPath();
+            ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.globalAlpha = alpha;
+            ctx.fill();
+          });
+          ctx.globalAlpha = 1;
+          requestAnimationFrame(draw);
+        }
+        requestAnimationFrame(draw);
+      }
+
+      // Clear canvas setiap frame
+      let fwRunning = true;
+      function fwLoop() {
+        if (!fwRunning) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(fwLoop);
+      }
+      fwLoop();
+
+      // Launch kembang api berkala
+      function scheduleFw() {
+        if (!fwRunning) return;
+        launchFirework();
+        setTimeout(scheduleFw, randomBetween(400, 900));
+      }
+      setTimeout(scheduleFw, 200);
+      setTimeout(scheduleFw, 600);
+
       await new Promise(r => setTimeout(r, 800));
       continue;
     }
