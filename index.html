@@ -541,7 +541,7 @@ body {
 .gift-cards-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.6rem;
 }
 
 /* Individual gift card — physical card style */
@@ -1384,11 +1384,112 @@ body.chat-active .letter-paper {
   margin: 0.4rem 0 1rem;
 }
 
+/* ── Q&A button (di sebelah kanan teks divider) ── */
+.gift-qa-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,169,110,0.45);
+  background: rgba(201,169,110,0.1);
+  color: #c9a96e;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+  font-family: 'Lato', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.gift-qa-btn:hover,
+.gift-qa-btn.open { background: rgba(201,169,110,0.25); border-color: rgba(201,169,110,0.8); }
+
+/* ── Q&A panel ── */
+.gift-qa-panel {
+  display: none;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(201,169,110,0.15);
+  border-radius: 10px;
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+}
+.gift-qa-panel.open { display: block; }
+
+.gift-qa-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(201,169,110,0.12);
+}
+.gift-qa-tab {
+  flex: 1;
+  padding: 0.45rem 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  color: rgba(201,169,110,0.45);
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  transition: color 0.2s, background 0.2s;
+  border-right: 1px solid rgba(201,169,110,0.08);
+}
+.gift-qa-tab:last-child { border-right: none; }
+.gift-qa-tab:hover { color: rgba(201,169,110,0.75); }
+.gift-qa-tab.active { color: #c9a96e; background: rgba(201,169,110,0.08); }
+
+.gift-qa-content {
+  padding: 0.8rem 1rem 0.5rem;
+}
+.gift-qa-title {
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.55);
+  margin-bottom: 0.5rem;
+  font-family: 'Lato', sans-serif;
+}
+.gift-qa-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.gift-qa-list li {
+  font-size: 0.67rem;
+  color: rgba(245,230,200,0.6);
+  line-height: 1.55;
+  padding-left: 1rem;
+  position: relative;
+  font-family: 'Lato', sans-serif;
+}
+.gift-qa-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0.2rem;
+  color: rgba(201,169,110,0.4);
+}
+.gift-qa-footer {
+  font-size: 0.6rem;
+  color: rgba(201,169,110,0.35);
+  font-style: italic;
+  padding: 0.5rem 1rem 0.7rem;
+  border-top: 1px solid rgba(201,169,110,0.08);
+  line-height: 1.5;
+  font-family: 'Lato', sans-serif;
+}
+.gift-qa-footer strong { color: rgba(201,169,110,0.6); font-style: normal; }
+
 .voucher-card {
   position: relative;
   border-radius: 14px;
   overflow: hidden;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0;
   box-shadow: 0 6px 24px rgba(0,0,0,0.45);
   font-family: 'Lato', sans-serif;
   transform: translateY(30px);
@@ -1411,7 +1512,13 @@ body.chat-active .letter-paper {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  background-size: 200% 100%;
+  animation: shimmerMove 3s ease-in-out infinite;
 }
+.voucher-card.kopi      .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(178,34,34,0.18) 50%, transparent 70%); }
+.voucher-card.indomaret .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(245,192,0,0.15) 50%, transparent 70%); }
+.voucher-card.pln       .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(255,232,0,0.15) 50%, transparent 70%); }
+.voucher-card.pulsa     .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(77,255,145,0.13) 50%, transparent 70%); }
 /* Accent stripes/bands */
 .voucher-card.kopi      .vc-accent { position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(to bottom,#b22222,#7a0000); }
 .voucher-card.indomaret .vc-accent { position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#cc0000,#1560bd,#f5c000,#cc0000); }
@@ -2172,18 +2279,28 @@ body.chat-active .letter-paper {
         <div class="gift-divider">
           <div class="gift-divider-line"></div>
           <span class="gift-divider-text">🎁 Hadiahmu ada di sini</span>
+          <button class="gift-qa-btn" onclick="toggleGiftQA(this)" aria-label="Syarat & Cara Pakai">?</button>
           <div class="gift-divider-line"></div>
+        </div>
+
+        <!-- Q&A Panel -->
+        <div class="gift-qa-panel" id="giftQaPanel">
+          <div class="gift-qa-tabs">
+            <button class="gift-qa-tab active" onclick="switchQaTab(this,'shopee')">Shopee</button>
+            <button class="gift-qa-tab" onclick="switchQaTab(this,'pln')">PLN</button>
+            <button class="gift-qa-tab" onclick="switchQaTab(this,'kopi')">Kopi</button>
+            <button class="gift-qa-tab" onclick="switchQaTab(this,'indomaret')">Indomaret</button>
+            <button class="gift-qa-tab" onclick="switchQaTab(this,'pulsa')">Pulsa</button>
+          </div>
+          <div class="gift-qa-content" id="qaContent">
+            <!-- populated by JS -->
+          </div>
+          <div class="gift-qa-footer">Semua aktivitas Redeem voucher akan diarahkan ke laman <strong>voucherku.com</strong> sebagai vendor penyedia.</div>
         </div>
 
         <div class="gift-cards-container" id="giftCardsContainer">
           <!-- Gift cards generated by JS -->
         </div>
-
-        <p class="redeem-note" id="redeemNote">
-          <strong>Cara redeem Shopee:</strong> Buka aplikasi Shopee → Profil →
-          Voucher Saya → Tukar Voucher → masukkan kode di atas.
-          Ketuk kode untuk menyalin otomatis. 👆
-        </p>
       </div>
 
       <!-- Chat section -->
@@ -2755,6 +2872,86 @@ function claimVoucher(btn) {
   }, 2500);
 }
 
+// ── Q&A Panel ──
+const QA_DATA = {
+  shopee: [
+    "Shopee Gift Card adalah voucher digital yang dapat ditukar menjadi Voucher Diskon sesuai nominal untuk belanja di Shopee.",
+    "Satu kode hanya berlaku untuk 1 (satu) kali klaim dan 1 (satu) kali transaksi.",
+    "Penukaran dilakukan melalui menu Voucher → Masukkan Kode Gift Card → Simpan.",
+    "Jika nilai belanja kurang dari nilai Gift Card, sisa saldo akan hangus dan tidak dapat dikembalikan.",
+    "Gift Card tidak dapat diuangkan, dipindahtangankan, atau dijual kembali.",
+    "Memiliki masa berlaku terbatas — pastikan digunakan sebelum tanggal kedaluwarsa. Tidak ada perpanjangan.",
+    "Dapat digunakan bersamaan dengan voucher toko atau voucher pengiriman gratis.",
+    "Jika transaksi dibatalkan atau pengembalian produk disetujui, voucher mungkin dapat dikembalikan sesuai kebijakan Shopee.",
+  ],
+  pln: [
+    "Voucher hanya berlaku untuk 1 (satu) kali pemakaian dan tidak dapat diuangkan.",
+    "Voucher berupa token listrik senilai Rp50.000, berlaku untuk nomor PLN prabayar.",
+    "Masukkan Nomor Meter dan periksa nama pelanggan yang muncul.",
+    "Pastikan Anda memasukkan nomor meter yang benar. Kami tidak dapat mengubah nomor meter apabila voucher sudah berhasil diproses.",
+    "Nomor Token listrik akan muncul pada halaman berikutnya. Simpan Nomor Token atau langsung masukkan ke dalam mesin meteran listrik.",
+    "Klik tombol \"Redeem Voucher\" di bawah ini untuk mulai proses isi token.",
+  ],
+  kopi: [
+    "Hadiah berupa kode voucher Kopi Kenangan yang dapat digunakan di aplikasi Kopi Kenangan atau ditukarkan di outlet Kopi Kenangan terdekat (konfirmasi ke kasir terlebih dahulu).",
+    "Voucher hanya berlaku untuk 1 (satu) kali pemakaian dan tidak dapat diuangkan.",
+    "Kode voucher akan muncul dalam waktu 1×24 jam setelah Anda menekan tombol \"Redeem\". Mohon periksa secara berkala.",
+    "Kode voucher dan masa berlaku akan muncul pada halaman berikutnya. Pastikan Anda menyimpan kode voucher Kopi Kenangan tersebut.",
+    "Kode voucher dapat digunakan langsung di aplikasi Kopi Kenangan atau di kasir (konfirmasi ke kasir terlebih dahulu).",
+    "Berlaku di outlet Kopi Kenangan seluruh Indonesia, kecuali booth (event).",
+    "Dapat digunakan tanpa minimum pembelian.",
+    "Tidak dapat digabungkan dengan promo, paket combo, additional topping, atau menu promo lainnya.",
+    "Pembayaran dengan voucher tidak mendapatkan Kenangan Points.",
+    "Tidak dapat digunakan untuk pembayaran additional topping, delivery charge, dan pembelian tas spunbond atau kantong plastik.",
+  ],
+  indomaret: [
+    "Hadiah berupa kode voucher Indomaret yang dapat digunakan di Indomaret terdekat.",
+    "Voucher hanya berlaku untuk 1 (satu) kali pemakaian dan tidak dapat diuangkan.",
+    "Kode voucher dan masa berlaku akan muncul pada halaman berikutnya. Pastikan Anda menyimpan kode voucher Indomaret tersebut.",
+    "Sesuai ketentuan Indomaret, barcode dan kode voucher tidak boleh di-print/cetak.",
+    "Tunjukkan kode voucher Indomaret (VOUCHER DIGITAL, bukan i-voucher) ke kasir saat melakukan pembayaran.",
+    "Dapat digunakan untuk transaksi barang apa saja, KECUALI pembayaran E-Commerce, Tagihan, Top Up Voucher Bioskop, Ticketing, dan produk digital/virtual lainnya.",
+    "Berlaku di semua outlet Indomaret kecuali Maluku dan Irian Jaya.",
+    "Hanya dapat digunakan di kasir Indomaret langsung, tidak bisa digunakan di aplikasi KlikIndomaret.",
+    "Pastikan total belanja LEBIH BESAR dari nominal voucher.",
+  ],
+  pulsa: [
+    "Voucher hanya berlaku untuk 1 (satu) kali pemakaian dan tidak dapat diuangkan.",
+    "Voucher berupa pulsa senilai Rp50.000 dan dapat digunakan untuk semua operator.",
+    "Pastikan Anda memasukkan nomor HP yang aktif dan tidak dalam masa tenggang. Kami tidak dapat mengubah nomor HP apabila voucher sudah berhasil diproses.",
+    "Jika transaksi berhasil, pulsa akan otomatis masuk ke nomor Anda.",
+    "Klik tombol \"Redeem Voucher\" di bawah ini untuk mulai proses isi pulsa.",
+  ],
+};
+
+function renderQaContent(brand) {
+  const items = QA_DATA[brand] || [];
+  const el = document.getElementById('qaContent');
+  el.innerHTML = `
+    <div class="gift-qa-title">Syarat & Ketentuan Voucher</div>
+    <ul class="gift-qa-list">
+      ${items.map(t => `<li>${t}</li>`).join('')}
+    </ul>
+  `;
+}
+
+function toggleGiftQA(btn) {
+  const panel = document.getElementById('giftQaPanel');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    // default tab: Shopee
+    renderQaContent('shopee');
+  }
+}
+
+function switchQaTab(btn, brand) {
+  document.querySelectorAll('.gift-qa-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderQaContent(brand);
+}
+
 function showGiftCards() {
   document.getElementById('gift-section').classList.add('visible');
   const container = document.getElementById('giftCardsContainer');
@@ -2796,13 +2993,7 @@ function showGiftCards() {
     setTimeout(() => el.classList.add('revealed'), i * 250 + 100);
   });
 
-  // ── 2. Divider Hadiah Tambahan ──
-  const dividerEl = document.createElement('div');
-  dividerEl.className = 'voucher-section-label';
-  dividerEl.textContent = '── Hadiah Tambahan ──';
-  container.appendChild(dividerEl);
-
-  // ── 3. Kartu voucher tambahan (dari VOUCHERS di birru-config.js) ──
+  // ── 2. Kartu voucher tambahan (dari VOUCHERS di birru-config.js) ──
   const voucherData = (typeof VOUCHERS !== 'undefined' && VOUCHERS[currentUser]) ? VOUCHERS[currentUser] : {};
   const brands = ['kopi', 'indomaret', 'pln', 'pulsa'];
   brands.forEach((brand, i) => {
