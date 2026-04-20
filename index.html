@@ -362,7 +362,7 @@ body {
   font-size: 1.1rem;
 }
 .letter-title {
-  font-family: 'Caveat', cursive;
+  font-family: 'Dancing Script', cursive;
   font-size: 2rem;
   font-weight: 700;
   color: #3d2c1e;
@@ -430,7 +430,7 @@ body {
   border: none;
   outline: none;
   background: transparent;
-  font-family: 'Caveat', cursive;
+  font-family: 'Dancing Script', cursive;
   font-size: 1.3rem;
   font-weight: 600;
   color: #3d2c1e;
@@ -439,6 +439,7 @@ body {
 #nameInput::placeholder {
   color: #c9a96e60;
   font-size: 1rem;
+  font-family: 'Dancing Script', cursive;
 }
 #nameSendBtn {
   background: none;
@@ -1140,7 +1141,7 @@ body.chat-active .letter-paper {
 
 /* ── Prayer Board (intro Bang Efung) ── */
 .prayer-board {
-  margin: 0.5rem 0 1.5rem;
+  margin: 0.5rem 0 1rem;
   background: #080808;
   background-image: radial-gradient(circle, rgba(245,163,0,0.10) 1px, transparent 1px);
   background-size: 5px 5px;
@@ -1185,7 +1186,7 @@ body.chat-active .letter-paper {
   100% { transform: translateX(100vw); }
 }
 .board-content {
-  padding: 1.4rem 1rem;
+  padding: 0.7rem 1rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -2681,7 +2682,7 @@ function addChatMessage(role, text, quotedText = null, quotedSender = null, used
   const el = document.createElement('div');
   el.className = `letter-message ${role === 'bot' ? 'bot-msg' : 'user-msg'}`;
 
-  const label = role === 'bot' ? '✦ Birru' : 'Kamu';
+  const label = role === 'bot' ? '✦ Birru.AI' : 'Kamu';
   const bubbleClass = role === 'bot' ? 'msg-bubble' : 'msg-bubble user-bubble';
   const quoteHtml = quotedText
     ? `<div class="msg-quote"><span class="msg-quote-sender">${quotedSender || 'Haeru'}</span>${quotedText}</div>`
@@ -2750,7 +2751,7 @@ function addVideoMessage() {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru</div>
+    <div class="msg-label">✦ Birru.AI</div>
     <div class="msg-bubble">
       <div class="chat-video-label">🎬 Video ucapan dari keluarga</div>
       <div class="chat-video-wrap">
@@ -2783,7 +2784,7 @@ function addWaButton(userName) {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru</div>
+    <div class="msg-label">✦ Birru.AI</div>
     <div class="msg-bubble">
       <div class="wa-invite-wrap">
         <span class="wa-invite-label">Kalau kamu mau langsung balas ke Haeru — tombol ini akan membuka WhatsApp dengan pesan yang sudah siap dikirim. ✨</span>
@@ -2803,7 +2804,7 @@ function addBirruInvite() {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru</div>
+    <div class="msg-label">✦ Birru.AI</div>
     <div class="msg-bubble">
       <div class="birru-invite-msg">Silahkan tanya apapun — aku, Birru, siap membantu. 🤍</div>
     </div>
@@ -2836,7 +2837,7 @@ function addAudioPlayerBubble(filename) {
   const el = document.createElement('div');
   el.className = 'letter-message bot-msg';
   el.innerHTML = `
-    <div class="msg-label">✦ Birru</div>
+    <div class="msg-label">✦ Birru.AI</div>
     <div class="audio-player-bubble" id="player-${id}">
       <div class="audio-player-title">🎵 ${title}</div>
       <div class="audio-player-controls">
