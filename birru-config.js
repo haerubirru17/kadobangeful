@@ -64,16 +64,7 @@ const INTRO_EFUNG = [
 
 const INTRO_ZIA = [
   {
-    type: "pantun",
-    text: "Pergi ke pasar beli terasi,\nMampir dulu ke warung kopi.\nSelamat datang di keluarga kami, Kak Ziah —\nSiap-siap ya, kami sedikit berisik!"
-  },
-  {
-    type: "text",
-    text: "\nHaeru senang banget akhirnya punya kakak ipar. Ini hadiah kecil tanda selamat datang — semoga cocok dan betah ya, Kak. Kalau abang mulai nyebelin, langsung lapor ke Haeru aja. 😂\n"
-  },
-  {
-    type: "pantun",
-    text: "Awan putih di langit biru,\nAngin sepoi lewat jendela.\nSemoga Kak Ziah bahagia selalu —\nBersama abang yang Haeru jamin, lumayan baik kalau lagi mood! 🤍"
+    type: "board"
   }
 ];
 
