@@ -674,7 +674,7 @@ const HAERU_CAMEO_EFUNG = {
 
 const VOUCHERS = {
   "saeful bahri": {
-    kopi:      { link: "https://voucherku.com/link-voucher-kopi-untuk-bang-efung" },
+    kopi:      { link: "https://www.google.com },
     indomaret: { link: "https://voucherku.com/link-voucher-indomaret-untuk-bang-efung" },
     pln:       { link: "https://voucherku.com/link-voucher-pln-untuk-bang-efung" },
     pulsa:     { link: "https://voucherku.com/link-voucher-pulsa-untuk-bang-efung" },
