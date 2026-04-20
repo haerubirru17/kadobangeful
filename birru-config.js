@@ -19,6 +19,13 @@ const WA_NUMBER = "62895347201717";
 const MUSIC_PLAYLIST = [
   "cinta - Vinapanduwinata.mp3",
   "kembang perawan.mp3",
+  "Full House OST.mp3",
+  "dracin OST.mp3",
+  "golden hour.mp3",
+  "kasih putih x titik nadir.mp3",
+  "keabadian.mp3",
+  "kesepian - Vierratale.mp3",
+  "nuansa bening.mp3",
 ];
 
 
