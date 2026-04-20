@@ -13,6 +13,15 @@ const WORKER_URL = "https://kadobangeful.haerubirru17.workers.dev";
 const YOUTUBE_VIDEO_ID = "GANTI_DENGAN_VIDEO_ID_YOUTUBE";
 const WA_NUMBER = "62895347201717";
 
+// ── Kode Shopee Gift Card per penerima ─────────────────────
+// Isi dengan kode asli dari Shopee (deretan huruf/angka).
+// Kosongkan array [] jika tidak ada kode untuk penerima tersebut.
+const SHOPEE_CODES = {
+  "saeful bahri":   ["SGV50MP04HYXXHS"],
+  "amriah fauziah": ["SGV50MP04UUEXD7"],
+  "haeru damiyati": [],
+};
+
 // ── Daftar file musik (taruh di folder sounds/music/) ──────
 // Judul otomatis diambil dari nama file — tidak perlu ditulis manual.
 // Contoh: "badai tuan telah berlalu.mp3" → tampil sebagai "Badai Tuan Telah Berlalu"
