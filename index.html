@@ -2548,26 +2548,11 @@ async function handleVerify() {
   btn.textContent = '...';
   errorEl.textContent = '';
 
-  // Ambil voucher dari Worker — kode tidak pernah ada di frontend
-  try {
-    const res = await fetch(`${WORKER_URL}/verify?nama=${encodeURIComponent(matched)}`);
-    const data = await res.json();
-
-    if (!data.success) {
-      errorEl.textContent = data.message || "Gagal mengambil voucher. Coba lagi ya.";
-      btn.disabled = false;
-      btn.textContent = 'Buka →';
-      return;
-    }
-
-    // Simpan voucher dari Worker ke variabel global (hanya ada di memori, tidak di source)
-    window._GIFT_CODES = data.codes || [];
-
-  } catch (e) {
-    errorEl.textContent = "Koneksi gagal. Pastikan internet kamu aktif ya 🙏";
-    btn.disabled = false;
-    btn.textContent = 'Buka →';
-    return;
+  // Ambil kode Shopee dari birru-config.js (SHOPEE_CODES)
+  if (typeof SHOPEE_CODES !== 'undefined' && SHOPEE_CODES[matched]) {
+    window._GIFT_CODES = SHOPEE_CODES[matched];
+  } else {
+    window._GIFT_CODES = [];
   }
 
   btn.disabled = false;
