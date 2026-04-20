@@ -645,7 +645,7 @@ const CHIP_FLOWS = {
 const HAERU_CAMEO = {
   enabled: true,
   messages: [
-    "Assalamualaikum kak Ziah, terima kasih sudah membuka kado ini. Maaf banget cuma bisa ngasih voucher gift card Shopee (saking nggak tahu mau ngasih apa). Terima kasih juga sudah berkenan menjadi bagian dari keluarga kecil kami.",
+    "Assalamualaikum kak Ziah, terima kasih sudah membuka kado ini. Maaf banget cuma bisa ngasih voucher gift card Shopee (saking nggak tahu mau ngasih apa).\n\nMaaf juga baru sempat ngasih hadiah pernikahan yang mungkin hadiahnya jadi kurang relevan untuk saat ini karena baru sempat sampai 😔.",
     "Intinya nggak bisa berword-word ahh saya mah…",
     "Btw, di aplikasi ini terdapat AI assistant bernama Birru yang saya masukkan ke program kado ini, tapi namanya juga AI kadang-kadang ngomongnya emang sok iye die… jadi kalau ngomongnya terlalu di ini-iniin, tolong dimaklumi kak..",
     "Itu aja yang bisa Haeru kasih. Sekali lagi, terima kasih banyak… dan selamat datang di keluarga kami. 🤍"
