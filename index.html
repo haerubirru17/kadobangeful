@@ -1139,6 +1139,24 @@ body.chat-active .letter-paper {
   100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 
+/* ── Merpati CSS ── */
+.board-dove {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+/* Wing flap: ubah bentuk SVG naik-turun */
+@keyframes wingFlap {
+  0%, 100% { transform: scaleY(1);   }
+  50%       { transform: scaleY(0.5); }
+}
+@keyframes doveFloat {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* ── Prayer Board (intro Bang Efung) ── */
 .prayer-board {
   margin: 0.5rem 0 1rem;
@@ -1408,19 +1426,70 @@ body.chat-active .letter-paper {
 .gift-qa-btn.open { background: rgba(201,169,110,0.25); border-color: rgba(201,169,110,0.8); }
 
 /* ── Q&A panel ── */
-.gift-qa-panel {
+/* ── Q&A Modal ── */
+.gift-qa-overlay {
   display: none;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(201,169,110,0.15);
-  border-radius: 10px;
-  margin-bottom: 0.9rem;
-  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 500;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(2px);
 }
-.gift-qa-panel.open { display: block; }
-
+.gift-qa-overlay.open {
+  display: flex;
+}
+.gift-qa-modal {
+  background: #1a1008;
+  border: 1px solid rgba(201,169,110,0.2);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.gift-qa-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.2rem 0;
+}
+.gift-qa-modal-title {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.6);
+  font-family: 'Lato', sans-serif;
+}
+.gift-qa-modal-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,169,110,0.3);
+  background: rgba(201,169,110,0.08);
+  color: #c9a96e;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.2s;
+}
+.gift-qa-modal-close:hover { background: rgba(201,169,110,0.2); }
 .gift-qa-tabs {
   display: flex;
   border-bottom: 1px solid rgba(201,169,110,0.12);
+  margin-top: 0.7rem;
 }
 .gift-qa-tab {
   flex: 1;
@@ -1431,25 +1500,28 @@ body.chat-active .letter-paper {
   text-transform: uppercase;
   background: transparent;
   border: none;
-  color: rgba(201,169,110,0.45);
+  color: rgba(201,169,110,0.4);
   cursor: pointer;
   font-family: 'Lato', sans-serif;
   transition: color 0.2s, background 0.2s;
   border-right: 1px solid rgba(201,169,110,0.08);
 }
 .gift-qa-tab:last-child { border-right: none; }
-.gift-qa-tab:hover { color: rgba(201,169,110,0.75); }
+.gift-qa-tab:hover { color: rgba(201,169,110,0.7); }
 .gift-qa-tab.active { color: #c9a96e; background: rgba(201,169,110,0.08); }
-
 .gift-qa-content {
-  padding: 0.8rem 1rem 0.5rem;
+  padding: 0.9rem 1.2rem 0.5rem;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: none;
 }
+.gift-qa-content::-webkit-scrollbar { display: none; }
 .gift-qa-title {
-  font-size: 0.56rem;
+  font-size: 0.54rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(201,169,110,0.55);
-  margin-bottom: 0.5rem;
+  color: rgba(201,169,110,0.5);
+  margin-bottom: 0.6rem;
   font-family: 'Lato', sans-serif;
 }
 .gift-qa-list {
@@ -1458,12 +1530,12 @@ body.chat-active .letter-paper {
   margin: 0 0 0.6rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 .gift-qa-list li {
-  font-size: 0.67rem;
-  color: rgba(245,230,200,0.6);
-  line-height: 1.55;
+  font-size: 0.68rem;
+  color: rgba(245,230,200,0.65);
+  line-height: 1.6;
   padding-left: 1rem;
   position: relative;
   font-family: 'Lato', sans-serif;
@@ -1478,7 +1550,7 @@ body.chat-active .letter-paper {
   font-size: 0.6rem;
   color: rgba(201,169,110,0.35);
   font-style: italic;
-  padding: 0.5rem 1rem 0.7rem;
+  padding: 0.6rem 1.2rem 1rem;
   border-top: 1px solid rgba(201,169,110,0.08);
   line-height: 1.5;
   font-family: 'Lato', sans-serif;
@@ -1512,13 +1584,12 @@ body.chat-active .letter-paper {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-size: 200% 100%;
   animation: shimmerMove 3s ease-in-out infinite;
 }
-.voucher-card.kopi      .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(178,34,34,0.18) 50%, transparent 70%); }
-.voucher-card.indomaret .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(245,192,0,0.15) 50%, transparent 70%); }
-.voucher-card.pln       .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(255,232,0,0.15) 50%, transparent 70%); }
-.voucher-card.pulsa     .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(77,255,145,0.13) 50%, transparent 70%); }
+.voucher-card.kopi      .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(178,34,34,0.22) 50%, transparent 70%); background-size: 200% 100%; }
+.voucher-card.indomaret .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(245,192,0,0.18) 50%, transparent 70%); background-size: 200% 100%; }
+.voucher-card.pln       .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(255,232,0,0.18) 50%, transparent 70%); background-size: 200% 100%; }
+.voucher-card.pulsa     .vc-glow { background: linear-gradient(105deg, transparent 30%, rgba(77,255,145,0.16) 50%, transparent 70%); background-size: 200% 100%; }
 /* Accent stripes/bands */
 .voucher-card.kopi      .vc-accent { position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(to bottom,#b22222,#7a0000); }
 .voucher-card.indomaret .vc-accent { position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#cc0000,#1560bd,#f5c000,#cc0000); }
@@ -2279,23 +2350,8 @@ body.chat-active .letter-paper {
         <div class="gift-divider">
           <div class="gift-divider-line"></div>
           <span class="gift-divider-text">🎁 Hadiahmu ada di sini</span>
-          <button class="gift-qa-btn" onclick="toggleGiftQA(this)" aria-label="Syarat & Cara Pakai">?</button>
+          <button class="gift-qa-btn" onclick="toggleGiftQA()" aria-label="Syarat & Cara Pakai">?</button>
           <div class="gift-divider-line"></div>
-        </div>
-
-        <!-- Q&A Panel -->
-        <div class="gift-qa-panel" id="giftQaPanel">
-          <div class="gift-qa-tabs">
-            <button class="gift-qa-tab active" onclick="switchQaTab(this,'shopee')">Shopee</button>
-            <button class="gift-qa-tab" onclick="switchQaTab(this,'pln')">PLN</button>
-            <button class="gift-qa-tab" onclick="switchQaTab(this,'kopi')">Kopi</button>
-            <button class="gift-qa-tab" onclick="switchQaTab(this,'indomaret')">Indomaret</button>
-            <button class="gift-qa-tab" onclick="switchQaTab(this,'pulsa')">Pulsa</button>
-          </div>
-          <div class="gift-qa-content" id="qaContent">
-            <!-- populated by JS -->
-          </div>
-          <div class="gift-qa-footer">Semua aktivitas Redeem voucher akan diarahkan ke laman <strong>voucherku.com</strong> sebagai vendor penyedia.</div>
         </div>
 
         <div class="gift-cards-container" id="giftCardsContainer">
@@ -2568,7 +2624,6 @@ async function typewriterSegments(segments) {
       `;
       container.appendChild(board);
 
-      // ── Fireworks Engine ──────────────────────────────────
       const canvas = board.querySelector('.board-fw-canvas');
       function resizeCanvas() {
         canvas.width  = canvas.offsetWidth  || 320;
@@ -2577,161 +2632,281 @@ async function typewriterSegments(segments) {
       resizeCanvas();
       const ctx = canvas.getContext('2d');
 
-      const FW_COLORS = [
-        '#ffd700','#f5a300','#ff6b35',
-        '#ff4444','#ff88cc','#44ffcc',
-        '#88aaff','#ffffff','#ffee88',
-      ];
+      if (currentUser === 'amriah fauziah') {
+        // ── Merpati Engine ──────────────────────────────────
+        // SVG merpati terbang — sayap mengepak via animasi
+        function spawnDove() {
+          const cw = canvas.width;
+          const ch = canvas.height;
+          const fromLeft = Math.random() < 0.5;
+          const size = 10 + Math.random() * 8;
+          const startX = fromLeft ? -size * 2 : cw + size * 2;
+          const endX   = fromLeft ? cw + size * 2 : -size * 2;
+          const y = ch * 0.1 + Math.random() * ch * 0.75;
+          const dur = 3500 + Math.random() * 2500;
+          const delay = Math.random() * 800;
+          const waveAmp = 4 + Math.random() * 6;
+          const waveFreq = 2 + Math.random() * 2;
+          const flapSpeed = 200 + Math.random() * 150;
 
-      class Particle {
-        constructor(x, y, vx, vy, color, life, size = 2) {
-          this.x = x; this.y = y;
-          this.vx = vx; this.vy = vy;
-          this.color = color;
-          this.life = life;
-          this.age  = 0;
-          this.size = size;
-          this.tail = [];
-          this.gravity = 55;
-          this.drag    = 0.97;
-        }
-        update(dt) {
-          this.tail.push({ x: this.x, y: this.y });
-          if (this.tail.length > 8) this.tail.shift();
-          this.vy += this.gravity * dt;
-          this.vx *= this.drag;
-          this.vy *= this.drag;
-          this.x  += this.vx * dt;
-          this.y  += this.vy * dt;
-          this.age += dt;
-        }
-        get alive() { return this.age < this.life; }
-        get alpha() { return Math.max(0, 1 - this.age / this.life); }
-        draw(ctx) {
-          for (let i = 0; i < this.tail.length; i++) {
-            const a = (i / this.tail.length) * this.alpha * 0.4;
-            const r = this.size * (i / this.tail.length) * 0.6;
+          // Draw dove on offscreen canvas then animate via JS
+          let startTime = null;
+          let flapPhase = 0;
+
+          function drawDovePath(cx, cy, sz, flip, wingY) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            if (flip) ctx.scale(-1, 1);
+            ctx.fillStyle = 'rgba(255,255,255,0.88)';
+            ctx.strokeStyle = 'rgba(200,200,200,0.5)';
+            ctx.lineWidth = 0.5;
+            // Body
             ctx.beginPath();
-            ctx.arc(this.tail[i].x, this.tail[i].y, Math.max(0.5, r), 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.globalAlpha = a;
+            ctx.ellipse(0, 0, sz * 0.55, sz * 0.28, 0.15, 0, Math.PI * 2);
             ctx.fill();
-          }
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fillStyle = this.color;
-          ctx.globalAlpha = this.alpha;
-          ctx.fill();
-          if (this.size > 1.5 && this.alpha > 0.5) {
+            // Head
             ctx.beginPath();
-            ctx.arc(this.x - 0.5, this.y - 0.5, this.size * 0.4, 0, Math.PI * 2);
+            ctx.arc(sz * 0.42, -sz * 0.1, sz * 0.18, 0, Math.PI * 2);
+            ctx.fill();
+            // Beak
+            ctx.beginPath();
+            ctx.moveTo(sz * 0.58, -sz * 0.1);
+            ctx.lineTo(sz * 0.72, -sz * 0.07);
+            ctx.lineTo(sz * 0.58, -sz * 0.03);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(255,210,120,0.9)';
+            ctx.fill();
+            // Tail
+            ctx.beginPath();
+            ctx.moveTo(-sz * 0.5, sz * 0.05);
+            ctx.lineTo(-sz * 0.82, -sz * 0.15);
+            ctx.lineTo(-sz * 0.72, sz * 0.18);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(240,240,240,0.8)';
+            ctx.fill();
+            // Upper wing
+            const wOff = wingY;
+            ctx.beginPath();
+            ctx.moveTo(-sz * 0.1, -sz * 0.05);
+            ctx.quadraticCurveTo(sz * 0.1, -sz * 0.5 + wOff * 0.6, sz * 0.35, -sz * 0.35 + wOff);
+            ctx.quadraticCurveTo(sz * 0.15, -sz * 0.1, -sz * 0.1, -sz * 0.05);
+            ctx.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx.fill();
+            ctx.stroke();
+            // Lower wing hint
+            ctx.beginPath();
+            ctx.moveTo(-sz * 0.15, sz * 0.08);
+            ctx.quadraticCurveTo(sz * 0.05, sz * 0.42 - wOff * 0.5, sz * 0.28, sz * 0.28 - wOff * 0.7);
+            ctx.quadraticCurveTo(sz * 0.1, sz * 0.12, -sz * 0.15, sz * 0.08);
+            ctx.fillStyle = 'rgba(230,230,230,0.75)';
+            ctx.fill();
+            ctx.restore();
+          }
+
+          function animDove(ts) {
+            if (!startTime) { startTime = ts + delay; return requestAnimationFrame(animDove); }
+            const elapsed = ts - startTime;
+            if (elapsed < 0) return requestAnimationFrame(animDove);
+            const t = elapsed / dur;
+            if (t > 1) return; // done, no respawn needed (scheduleD handles it)
+
+            const x = startX + (endX - startX) * t;
+            const wavY = y + Math.sin(t * Math.PI * waveFreq) * waveAmp;
+            flapPhase = elapsed / flapSpeed;
+            const wingY = Math.sin(flapPhase * Math.PI * 2) * size * 0.4;
+
+            // fade in/out
+            let alpha = 1;
+            if (t < 0.08) alpha = t / 0.08;
+            else if (t > 0.88) alpha = (1 - t) / 0.12;
+
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            drawDovePath(x, wavY, size, !fromLeft, wingY);
+            ctx.restore();
+
+            requestAnimationFrame(animDove);
+          }
+
+          requestAnimationFrame(animDove);
+        }
+
+        // Continuous render loop
+        let doveLastTime = null;
+        function doveFrame(ts) {
+          if (!doveLastTime) doveLastTime = ts;
+          doveLastTime = ts;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          requestAnimationFrame(doveFrame);
+        }
+        requestAnimationFrame(doveFrame);
+
+        function scheduleD() {
+          spawnDove();
+          setTimeout(scheduleD, 600 + Math.random() * 900);
+        }
+        scheduleD();
+        setTimeout(scheduleD, 350);
+        setTimeout(scheduleD, 900);
+
+      } else {
+        // ── Fireworks Engine (Bang Efung) ──────────────────
+        const FW_COLORS = [
+          '#ffd700','#f5a300','#ff6b35',
+          '#ff4444','#ff88cc','#44ffcc',
+          '#88aaff','#ffffff','#ffee88',
+        ];
+
+        class Particle {
+          constructor(x, y, vx, vy, color, life, size = 2) {
+            this.x = x; this.y = y;
+            this.vx = vx; this.vy = vy;
+            this.color = color;
+            this.life = life;
+            this.age  = 0;
+            this.size = size;
+            this.tail = [];
+            this.gravity = 55;
+            this.drag    = 0.97;
+          }
+          update(dt) {
+            this.tail.push({ x: this.x, y: this.y });
+            if (this.tail.length > 8) this.tail.shift();
+            this.vy += this.gravity * dt;
+            this.vx *= this.drag;
+            this.vy *= this.drag;
+            this.x  += this.vx * dt;
+            this.y  += this.vy * dt;
+            this.age += dt;
+          }
+          get alive() { return this.age < this.life; }
+          get alpha() { return Math.max(0, 1 - this.age / this.life); }
+          draw(ctx) {
+            for (let i = 0; i < this.tail.length; i++) {
+              const a = (i / this.tail.length) * this.alpha * 0.4;
+              const r = this.size * (i / this.tail.length) * 0.6;
+              ctx.beginPath();
+              ctx.arc(this.tail[i].x, this.tail[i].y, Math.max(0.5, r), 0, Math.PI * 2);
+              ctx.fillStyle = this.color;
+              ctx.globalAlpha = a;
+              ctx.fill();
+            }
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.alpha;
+            ctx.fill();
+            if (this.size > 1.5 && this.alpha > 0.5) {
+              ctx.beginPath();
+              ctx.arc(this.x - 0.5, this.y - 0.5, this.size * 0.4, 0, Math.PI * 2);
+              ctx.fillStyle = '#fff';
+              ctx.globalAlpha = this.alpha * 0.6;
+              ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+          }
+        }
+
+        class Rocket {
+          constructor(x, targetY, color) {
+            this.x = x;
+            this.y = canvas.height + 5;
+            this.targetY = targetY;
+            this.color = color;
+            this.speed = 180 + Math.random() * 60;
+            this.tail = [];
+            this.exploded = false;
+          }
+          update(dt, allParticles) {
+            if (this.exploded) return;
+            this.tail.push({ x: this.x, y: this.y });
+            if (this.tail.length > 12) this.tail.shift();
+            this.y -= this.speed * dt;
+            if (this.y <= this.targetY) {
+              this.exploded = true;
+              this.burst(allParticles);
+            }
+          }
+          burst(allParticles) {
+            const count  = 60 + Math.floor(Math.random() * 30);
+            const colors = [this.color, '#ffffff', '#fff8e0'];
+            for (let i = 0; i < count; i++) {
+              const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
+              const speed = 60 + Math.random() * 80;
+              const col   = colors[Math.floor(Math.random() * colors.length)];
+              const life  = 0.9 + Math.random() * 0.6;
+              const size  = 1.2 + Math.random() * 1.8;
+              allParticles.push(new Particle(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, col, life, size));
+            }
+            for (let i = 0; i < 12; i++) {
+              const angle = Math.random() * Math.PI * 2;
+              const speed = 20 + Math.random() * 30;
+              allParticles.push(new Particle(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, '#ffffff', 0.3 + Math.random() * 0.2, 0.8));
+            }
+          }
+          draw(ctx) {
+            if (this.exploded) return;
+            for (let i = 0; i < this.tail.length; i++) {
+              const a = (i / this.tail.length) * 0.6;
+              ctx.beginPath();
+              ctx.arc(this.tail[i].x, this.tail[i].y, 1.2, 0, Math.PI * 2);
+              ctx.fillStyle = this.color;
+              ctx.globalAlpha = a;
+              ctx.fill();
+            }
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
             ctx.fillStyle = '#fff';
-            ctx.globalAlpha = this.alpha * 0.6;
+            ctx.globalAlpha = 1;
             ctx.fill();
+            ctx.globalAlpha = 1;
           }
-          ctx.globalAlpha = 1;
         }
-      }
 
-      class Rocket {
-        constructor(x, targetY, color) {
-          this.x = x;
-          this.y = canvas.height + 5;
-          this.targetY = targetY;
-          this.color = color;
-          this.speed = 180 + Math.random() * 60;
-          this.tail = [];
-          this.exploded = false;
-        }
-        update(dt, allParticles) {
-          if (this.exploded) return;
-          this.tail.push({ x: this.x, y: this.y });
-          if (this.tail.length > 12) this.tail.shift();
-          this.y -= this.speed * dt;
-          if (this.y <= this.targetY) {
-            this.exploded = true;
-            this.burst(allParticles);
-          }
-        }
-        burst(allParticles) {
-          const count  = 60 + Math.floor(Math.random() * 30);
-          const colors = [this.color, '#ffffff', '#fff8e0'];
-          for (let i = 0; i < count; i++) {
-            const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
-            const speed = 60 + Math.random() * 80;
-            const col   = colors[Math.floor(Math.random() * colors.length)];
-            const life  = 0.9 + Math.random() * 0.6;
-            const size  = 1.2 + Math.random() * 1.8;
-            allParticles.push(new Particle(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, col, life, size));
-          }
-          for (let i = 0; i < 12; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 20 + Math.random() * 30;
-            allParticles.push(new Particle(this.x, this.y, Math.cos(angle)*speed, Math.sin(angle)*speed, '#ffffff', 0.3 + Math.random() * 0.2, 0.8));
-          }
-        }
-        draw(ctx) {
-          if (this.exploded) return;
-          for (let i = 0; i < this.tail.length; i++) {
-            const a = (i / this.tail.length) * 0.6;
-            ctx.beginPath();
-            ctx.arc(this.tail[i].x, this.tail[i].y, 1.2, 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.globalAlpha = a;
-            ctx.fill();
-          }
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = '#fff';
-          ctx.globalAlpha = 1;
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        }
-      }
+        const rockets   = [];
+        const particles = [];
+        let lastTime    = null;
 
-      const rockets   = [];
-      const particles = [];
-      let lastTime    = null;
-
-      function spawnRocket() {
-        const cw = canvas.width;
-        const ch = canvas.height;
-        let x;
-        if (Math.random() < 0.5) {
-          x = 10 + Math.random() * cw * 0.30;
-        } else {
-          x = cw * 0.70 + Math.random() * cw * 0.28;
+        function spawnRocket() {
+          const cw = canvas.width;
+          const ch = canvas.height;
+          let x;
+          if (Math.random() < 0.5) {
+            x = 10 + Math.random() * cw * 0.30;
+          } else {
+            x = cw * 0.70 + Math.random() * cw * 0.28;
+          }
+          const targetY = ch * 0.08 + Math.random() * ch * 0.50;
+          const color   = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
+          rockets.push(new Rocket(x, targetY, color));
         }
-        const targetY = ch * 0.08 + Math.random() * ch * 0.50;
-        const color   = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
-        rockets.push(new Rocket(x, targetY, color));
-      }
 
-      function fwFrame(ts) {
-        if (!lastTime) lastTime = ts;
-        const dt = Math.min((ts - lastTime) / 1000, 0.05);
-        lastTime = ts;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = rockets.length - 1; i >= 0; i--) {
-          rockets[i].update(dt, particles);
-          rockets[i].draw(ctx);
-          if (rockets[i].exploded) rockets.splice(i, 1);
-        }
-        for (let i = particles.length - 1; i >= 0; i--) {
-          particles[i].update(dt);
-          particles[i].draw(ctx);
-          if (!particles[i].alive) particles.splice(i, 1);
+        function fwFrame(ts) {
+          if (!lastTime) lastTime = ts;
+          const dt = Math.min((ts - lastTime) / 1000, 0.05);
+          lastTime = ts;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let i = rockets.length - 1; i >= 0; i--) {
+            rockets[i].update(dt, particles);
+            rockets[i].draw(ctx);
+            if (rockets[i].exploded) rockets.splice(i, 1);
+          }
+          for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update(dt);
+            particles[i].draw(ctx);
+            if (!particles[i].alive) particles.splice(i, 1);
+          }
+          requestAnimationFrame(fwFrame);
         }
         requestAnimationFrame(fwFrame);
-      }
-      requestAnimationFrame(fwFrame);
 
-      function scheduleRocket() {
-        spawnRocket();
-        setTimeout(scheduleRocket, 800 + Math.random() * 1000);
+        function scheduleRocket() {
+          spawnRocket();
+          setTimeout(scheduleRocket, 800 + Math.random() * 1000);
+        }
+        setTimeout(scheduleRocket, 100);
+        setTimeout(scheduleRocket, 600);
       }
-      setTimeout(scheduleRocket, 100);
-      setTimeout(scheduleRocket, 600);
 
       await new Promise(r => setTimeout(r, 800));
       continue;
@@ -2935,14 +3110,17 @@ function renderQaContent(brand) {
   `;
 }
 
-function toggleGiftQA(btn) {
-  const panel = document.getElementById('giftQaPanel');
-  const isOpen = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
-  btn.classList.toggle('open', !isOpen);
-  if (!isOpen) {
-    // default tab: Shopee
-    renderQaContent('shopee');
+function toggleGiftQA() {
+  const overlay = document.getElementById('giftQaOverlay');
+  const isOpen = overlay.classList.contains('open');
+  overlay.classList.toggle('open', !isOpen);
+  if (!isOpen) renderQaContent('shopee');
+}
+
+function closeGiftQA(e) {
+  // tutup hanya kalau klik di overlay (bukan di dalam modal)
+  if (e.target === document.getElementById('giftQaOverlay')) {
+    document.getElementById('giftQaOverlay').classList.remove('open');
   }
 }
 
@@ -4025,3 +4203,22 @@ document.getElementById('chatInput').addEventListener('input', function() {
   this.style.height = Math.min(this.scrollHeight, 80) + 'px';
 });
 </script>
+
+<!-- Q&A Modal -->
+<div class="gift-qa-overlay" id="giftQaOverlay" onclick="closeGiftQA(event)">
+  <div class="gift-qa-modal">
+    <div class="gift-qa-modal-header">
+      <span class="gift-qa-modal-title">Syarat &amp; Ketentuan Voucher</span>
+      <button class="gift-qa-modal-close" onclick="toggleGiftQA()">✕</button>
+    </div>
+    <div class="gift-qa-tabs">
+      <button class="gift-qa-tab active" onclick="switchQaTab(this,'shopee')">Shopee</button>
+      <button class="gift-qa-tab" onclick="switchQaTab(this,'pln')">PLN</button>
+      <button class="gift-qa-tab" onclick="switchQaTab(this,'kopi')">Kopi</button>
+      <button class="gift-qa-tab" onclick="switchQaTab(this,'indomaret')">Indomaret</button>
+      <button class="gift-qa-tab" onclick="switchQaTab(this,'pulsa')">Pulsa</button>
+    </div>
+    <div class="gift-qa-content" id="qaContent"></div>
+    <div class="gift-qa-footer">Semua aktivitas Redeem voucher akan diarahkan ke laman <strong>voucherku.com</strong> sebagai vendor penyedia.</div>
+  </div>
+</div>
