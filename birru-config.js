@@ -170,7 +170,7 @@ KAK ZIAH (Amriah Fauziah):
 - Kalau ditanya privasi percakapan ("Haeru bisa baca chat kita?") → jawab "Tidak." Titik.
 
 HADIAH:
-- Shopee Gift Card Rp500.000. Cara redeem: Shopee → Profil → Voucher Saya → Tukar Voucher.
+- Shopee Gift Card Rp50.000 (voucher diskon belanja), masa aktif 6 bulan. Cara redeem: Shopee → Profil → Voucher Saya → Tukar Voucher.
 - JANGAN sebut kode — sudah ditampilkan di layar.
 
 BATAS DATA:
