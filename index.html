@@ -1372,6 +1372,231 @@ body.chat-active .letter-paper {
   font-style: italic;
 }
 
+/* ══════════════════════════════
+   VOUCHER TAMBAHAN — kartu klaim
+══════════════════════════════ */
+.voucher-section-label {
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201,169,110,0.3);
+  text-align: center;
+  margin: 0.4rem 0 1rem;
+}
+
+.voucher-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+  font-family: 'Lato', sans-serif;
+  transform: translateY(30px);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.6s ease;
+}
+.voucher-card.revealed { transform: translateY(0); opacity: 1; }
+
+/* Backgrounds per brand */
+.voucher-card.kopi      .vc-bg { background: linear-gradient(135deg,#0d0000,#1a0000 45%,#0d0000); }
+.voucher-card.indomaret .vc-bg { background: linear-gradient(135deg,#08001a,#140033 45%,#08001a); }
+.voucher-card.pln       .vc-bg { background: linear-gradient(135deg,#0a0a00,#1a1a00 45%,#0a0a00); }
+.voucher-card.pulsa     .vc-bg { background: linear-gradient(135deg,#001208,#002d14 45%,#001208); }
+
+.vc-bg {
+  position: absolute;
+  inset: 0;
+}
+.vc-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* Accent stripes/bands */
+.voucher-card.kopi      .vc-accent { position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(to bottom,#b22222,#7a0000); }
+.voucher-card.indomaret .vc-accent { position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#cc0000,#1560bd,#f5c000,#cc0000); }
+.voucher-card.pln       .vc-accent { position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#ffe800,#cc0000,#00aeef,#ffe800); }
+.voucher-card.pulsa     .vc-accent { display:none; }
+
+.vc-body {
+  position: relative;
+  z-index: 2;
+  padding: 1.05rem 1.2rem;
+}
+.voucher-card.kopi .vc-body { padding-left: 1.5rem; }
+
+.vc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+  gap: 0.6rem;
+}
+.vc-meta { flex: 1; }
+.vc-type {
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.voucher-card.kopi      .vc-type { color: rgba(178,34,34,0.5); }
+.voucher-card.indomaret .vc-type { color: rgba(245,192,0,0.55); }
+.voucher-card.pln       .vc-type { color: rgba(255,232,0,0.45); }
+.voucher-card.pulsa     .vc-type { color: rgba(77,255,145,0.4); }
+
+.vc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.98rem;
+  color: #f5e6c8;
+}
+.voucher-card.kopi .vc-title { font-style: italic; }
+
+/* Logo badges */
+.vc-logo-badge {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.vc-logo-badge img {
+  display: block;
+  object-fit: contain;
+}
+.voucher-card.kopi      .vc-logo-badge { background:#fff; padding:0.45rem 0.6rem; min-width:72px; }
+.voucher-card.kopi      .vc-logo-badge img { height:32px; max-width:90px; }
+.voucher-card.indomaret .vc-logo-badge { background:#fff; padding:0.35rem 0.55rem; }
+.voucher-card.indomaret .vc-logo-badge img { height:28px; max-width:90px; }
+.voucher-card.pln       .vc-logo-badge { background:#ffe800; padding:0.4rem 0.5rem; }
+.voucher-card.pln       .vc-logo-badge img { height:44px; max-width:32px; }
+
+/* Pulsa — SVG sinyal badge */
+.vc-pulsa-badge {
+  background: #003d1a;
+  border: 1px solid rgba(77,255,145,0.22);
+  border-radius: 8px;
+  padding: 0.42rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.vc-pulsa-badge-label {
+  font-size: 0.44rem;
+  color: #4dff91;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Operator chips */
+.vc-ops {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.45rem;
+}
+.vc-op-chip {
+  font-size: 0.46rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 20px;
+  border: 1px solid rgba(77,255,145,0.18);
+  color: rgba(77,255,145,0.45);
+  letter-spacing: 0.04em;
+}
+
+/* Dividers */
+.vc-divider {
+  height: 1px;
+  margin: 0.5rem 0;
+}
+.voucher-card.kopi      .vc-divider { border-top: 1px dashed rgba(178,34,34,0.25); background:none; }
+.voucher-card.indomaret .vc-divider { background: linear-gradient(90deg,transparent,rgba(245,192,0,0.2),transparent); }
+.voucher-card.pln       .vc-divider { background: linear-gradient(90deg,transparent,rgba(255,232,0,0.2),transparent); }
+.voucher-card.pulsa     .vc-divider { background: linear-gradient(90deg,transparent,rgba(77,255,145,0.13),transparent); }
+
+/* Amount row */
+.vc-amount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+.vc-amount-left {}
+.vc-amount-label {
+  font-size: 0.5rem;
+  margin-bottom: 3px;
+}
+.voucher-card.kopi      .vc-amount-label { color: rgba(255,200,200,0.38); }
+.voucher-card.indomaret .vc-amount-label { color: rgba(245,192,0,0.38); }
+.voucher-card.pln       .vc-amount-label { color: rgba(255,232,0,0.38); }
+.voucher-card.pulsa     .vc-amount-label { color: rgba(77,255,145,0.35); }
+
+.vc-amount-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.voucher-card.kopi      .vc-amount-value { color: #ff8888; }
+.voucher-card.indomaret .vc-amount-value { color: #f5c000; }
+.voucher-card.pln       .vc-amount-value { color: #ffe800; }
+.voucher-card.pulsa     .vc-amount-value { color: #4dff91; }
+
+.vc-expiry-wrap { text-align: right; }
+.vc-expiry-label {
+  font-size: 0.5rem;
+  margin-bottom: 3px;
+}
+.voucher-card.kopi      .vc-expiry-label { color: rgba(255,200,200,0.38); }
+.voucher-card.indomaret .vc-expiry-label { color: rgba(245,192,0,0.38); }
+.voucher-card.pln       .vc-expiry-label { color: rgba(255,232,0,0.38); }
+.voucher-card.pulsa     .vc-expiry-label { color: rgba(77,255,145,0.35); }
+
+.vc-expiry-value { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+
+.vc-note {
+  font-size: 0.62rem;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+.voucher-card.kopi      .vc-note { color: rgba(255,200,200,0.25); }
+.voucher-card.indomaret .vc-note { color: rgba(245,192,0,0.25); }
+.voucher-card.pln       .vc-note { color: rgba(0,174,239,0.35); }
+.voucher-card.pulsa     .vc-note { color: rgba(77,255,145,0.22); }
+
+/* Claim button */
+.vc-btn {
+  width: 100%;
+  padding: 0.55rem;
+  border-radius: 6px;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Lato', sans-serif;
+}
+.voucher-card.kopi      .vc-btn { border-color: #b22222; }
+.voucher-card.indomaret .vc-btn { border-color: #f5c000; color: #0d0010; }
+.voucher-card.pln       .vc-btn { border-color: #ffe800; color: #0a0a00; }
+.voucher-card.pulsa     .vc-btn { border-color: #4dff91; color: #001208; }
+.vc-btn.idle {
+  background: transparent;
+}
+.voucher-card.kopi      .vc-btn.idle { background: rgba(178,34,34,0.18); border: 1px solid rgba(178,34,34,0.35); color: #ff9999; }
+.voucher-card.indomaret .vc-btn.idle { background: rgba(245,192,0,0.18); border: 1px solid rgba(245,192,0,0.35); color: #f5c000; }
+.voucher-card.pln       .vc-btn.idle { background: rgba(255,232,0,0.18); border: 1px solid rgba(255,232,0,0.35); color: #ffe800; }
+.voucher-card.pulsa     .vc-btn.idle { background: rgba(77,255,145,0.18); border: 1px solid rgba(77,255,145,0.35); color: #4dff91; }
+.vc-btn.active {
+  border-width: 1px;
+  border-style: solid;
+}
+.voucher-card.kopi      .vc-btn.active { background:#b22222; color:#fff; }
+.voucher-card.indomaret .vc-btn.active { background:#f5c000; color:#0d0010; }
+.voucher-card.pln       .vc-btn.active { background:#ffe800; color:#0a0a00; }
+.voucher-card.pulsa     .vc-btn.active { background:#4dff91; color:#001208; }
+
 /* ── Gift card tap feedback ── */
 .gift-card.copying {
   transform: scale(0.97) !important;
@@ -1954,8 +2179,8 @@ body.chat-active .letter-paper {
           <!-- Gift cards generated by JS -->
         </div>
 
-        <p class="redeem-note">
-          <strong>Cara redeem:</strong> Buka aplikasi Shopee → Profil →
+        <p class="redeem-note" id="redeemNote">
+          <strong>Cara redeem Shopee:</strong> Buka aplikasi Shopee → Profil →
           Voucher Saya → Tukar Voucher → masukkan kode di atas.
           Ketuk kode untuk menyalin otomatis. 👆
         </p>
@@ -2443,12 +2668,99 @@ function typewriterElement(el, text, speed) {
 // GIFT CARDS
 // ══════════════════════════════════════════════════════════
 
+// ── Helper: buat kartu voucher tambahan (kopi/indomaret/pln/pulsa) ──
+function buildVoucherCard(brand, cfg, idx) {
+  const map = {
+    kopi:      { type: "Food & Beverage", title: "Voucher Minuman",    amount: "Rp25.000", note: "Berlaku di seluruh gerai Kopi Kenangan" },
+    indomaret: { type: "Retail",           title: "Voucher Belanja",    amount: "Rp50.000", note: "Dapat digunakan di seluruh gerai Indomaret" },
+    pln:       { type: "Token Listrik",    title: "Voucher Token PLN",  amount: "Rp50.000", note: "Isi nomor meter setelah membuka halaman klaim" },
+    pulsa:     { type: "Telco · Semua Operator", title: "Voucher Pulsa", amount: "Rp50.000", note: "Berlaku untuk Telkomsel, Indosat, XL, Tri, Smartfren" },
+  };
+  const ops = ["Telkomsel","Indosat","XL","Tri","Smartfren"];
+  const d = map[brand];
+
+  // Logo badge HTML
+  let logoBadge = '';
+  if (brand === 'pulsa') {
+    logoBadge = `
+      <div class="vc-pulsa-badge">
+        <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+          <rect x="0.5"  y="16" width="3" height="5.5"  rx="1" fill="#4dff91" opacity="0.35"/>
+          <rect x="5.2"  y="12" width="3" height="9.5"  rx="1" fill="#4dff91" opacity="0.55"/>
+          <rect x="9.9"  y="8"  width="3" height="13.5" rx="1" fill="#4dff91" opacity="0.75"/>
+          <rect x="14.6" y="4"  width="3" height="17.5" rx="1" fill="#4dff91" opacity="0.9"/>
+          <rect x="19.3" y="0"  width="3" height="21.5" rx="1" fill="#4dff91"/>
+        </svg>
+        <div class="vc-pulsa-badge-label">ALL OPR</div>
+      </div>`;
+  } else {
+    const logoSrc = `images/logos/${brand === 'kopi' ? 'kopi-kenangan' : brand}.png`;
+    logoBadge = `<div class="vc-logo-badge"><img src="${logoSrc}" alt="${brand}" onerror="this.parentElement.style.display='none'"></div>`;
+  }
+
+  // Operator chips (hanya pulsa)
+  const opsHtml = brand === 'pulsa'
+    ? `<div class="vc-ops">${ops.map(o => `<span class="vc-op-chip">${o}</span>`).join('')}</div>`
+    : '';
+
+  const el = document.createElement('div');
+  el.className = `voucher-card ${brand}`;
+  el.dataset.brand = brand;
+  el.dataset.link = cfg.link || '';
+  el.dataset.vcIdx = idx;
+  el.innerHTML = `
+    <div class="vc-bg"></div>
+    <div class="vc-glow"></div>
+    <div class="vc-accent"></div>
+    <div class="vc-body">
+      <div class="vc-header">
+        <div class="vc-meta">
+          <div class="vc-type">${d.type}</div>
+          <div class="vc-title">${d.title}</div>
+        </div>
+        ${logoBadge}
+      </div>
+      ${opsHtml}
+      <div class="vc-divider"></div>
+      <div class="vc-amount-row">
+        <div class="vc-amount-left">
+          <div class="vc-amount-label">Nilai Voucher</div>
+          <div class="vc-amount-value">${d.amount}</div>
+        </div>
+        <div class="vc-expiry-wrap">
+          <div class="vc-expiry-label">Berlaku</div>
+          <div class="vc-expiry-value">6 bulan</div>
+        </div>
+      </div>
+      <div class="vc-note">${d.note}</div>
+      <button class="vc-btn idle" onclick="claimVoucher(this)">Buka &amp; Klaim →</button>
+    </div>
+  `;
+  return el;
+}
+
+function claimVoucher(btn) {
+  const card = btn.closest('.voucher-card');
+  const link = card.dataset.link;
+  btn.classList.remove('idle');
+  btn.classList.add('active');
+  btn.textContent = '✓ Membuka Voucherku...';
+  if (link && link !== 'GANTI_LINK_VOUCHERKU_' + card.dataset.brand.toUpperCase() && link !== '') {
+    setTimeout(() => window.open(link, '_blank'), 300);
+  }
+  setTimeout(() => {
+    btn.classList.remove('active');
+    btn.classList.add('idle');
+    btn.textContent = 'Buka & Klaim →';
+  }, 2500);
+}
+
 function showGiftCards() {
   document.getElementById('gift-section').classList.add('visible');
   const container = document.getElementById('giftCardsContainer');
   container.innerHTML = '';
 
-  // Voucher datang dari Worker (/verify), bukan dari source code
+  // ── 1. Shopee Gift Card (kode dari Worker) ──
   const codes = window._GIFT_CODES || [];
   const cardLabels = [
     { title: "Shopee Gift Card", amount: "Rp500.000" },
@@ -2468,7 +2780,7 @@ function showGiftCards() {
         <span class="gift-card-copy-overlay-text">✓ Kode Disalin!</span>
       </div>
       <div class="gift-card-content">
-        <div class="gift-card-logo">Shopee</div>
+        <div class="gift-card-logo"><img src="images/logos/shopee.png" alt="Shopee" style="height:20px;max-width:80px;object-fit:contain;display:block" onerror="this.outerHTML='<span style=\'color:#f5832a;font-weight:700;font-size:1rem\'>Shopee</span>'"></div>
         <div class="gift-card-type">Shopee Gift Card</div>
         <div class="gift-card-title">${label.title}</div>
         <div class="gift-card-code-row">
@@ -2481,10 +2793,23 @@ function showGiftCards() {
     `;
     el.addEventListener('click', () => copyCardCode(el));
     container.appendChild(el);
+    setTimeout(() => el.classList.add('revealed'), i * 250 + 100);
+  });
 
-    setTimeout(() => {
-      el.classList.add('revealed');
-    }, i * 250 + 100);
+  // ── 2. Divider Hadiah Tambahan ──
+  const dividerEl = document.createElement('div');
+  dividerEl.className = 'voucher-section-label';
+  dividerEl.textContent = '── Hadiah Tambahan ──';
+  container.appendChild(dividerEl);
+
+  // ── 3. Kartu voucher tambahan (dari VOUCHERS di birru-config.js) ──
+  const voucherData = (typeof VOUCHERS !== 'undefined' && VOUCHERS[currentUser]) ? VOUCHERS[currentUser] : {};
+  const brands = ['kopi', 'indomaret', 'pln', 'pulsa'];
+  brands.forEach((brand, i) => {
+    const cfg = voucherData[brand] || { link: '' };
+    const card = buildVoucherCard(brand, cfg, codes.length + i);
+    container.appendChild(card);
+    setTimeout(() => card.classList.add('revealed'), (codes.length + i) * 200 + 300);
   });
 
   // Confetti!
