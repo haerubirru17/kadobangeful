@@ -3035,12 +3035,12 @@ function claimVoucher(btn) {
 // ── Q&A Panel ──
 const QA_DATA = {
   shopee: [
-    "Shopee Gift Card adalah voucher digital yang dapat ditukar menjadi Voucher Diskon sesuai nominal untuk belanja di Shopee.",
+    "Shopee Gift Card adalah voucher digital senilai Rp50.000 yang dapat ditukar menjadi Voucher Diskon untuk belanja di Shopee.",
+    "Masa aktif voucher adalah 6 bulan sejak kode diterima — pastikan digunakan sebelum kedaluwarsa.",
     "Satu kode hanya berlaku untuk 1 (satu) kali klaim dan 1 (satu) kali transaksi.",
     "Penukaran dilakukan melalui menu Voucher → Masukkan Kode Gift Card → Simpan.",
     "Jika nilai belanja kurang dari nilai Gift Card, sisa saldo akan hangus dan tidak dapat dikembalikan.",
     "Gift Card tidak dapat diuangkan, dipindahtangankan, atau dijual kembali.",
-    "Memiliki masa berlaku terbatas — pastikan digunakan sebelum tanggal kedaluwarsa. Tidak ada perpanjangan.",
     "Dapat digunakan bersamaan dengan voucher toko atau voucher pengiriman gratis.",
     "Jika transaksi dibatalkan atau pengembalian produk disetujui, voucher mungkin dapat dikembalikan sesuai kebijakan Shopee.",
   ],
@@ -3123,7 +3123,7 @@ function showGiftCards() {
   // ── 1. Shopee Gift Card (kode dari Worker) ──
   const codes = window._GIFT_CODES || [];
   const cardLabels = [
-    { title: "Shopee Gift Card", amount: "Rp500.000" },
+    { title: "Shopee Gift Card", amount: "Rp50.000" },
   ];
 
   codes.forEach((code, i) => {
@@ -3147,7 +3147,8 @@ function showGiftCards() {
           <span class="gift-card-code">${code}</span>
           <button class="gift-card-copy-btn" onclick="event.stopPropagation(); copyCardCode(this.closest('.gift-card'))">Salin</button>
         </div>
-        <div class="gift-card-amount">Senilai <strong>${label.amount}</strong></div>
+        <div class="gift-card-amount">Senilai <strong>${label.amount}</strong> · Masa aktif 6 bulan</div>
+        <div class="gift-card-amount" style="font-size:0.75rem;opacity:0.8;margin-top:2px;">Voucher Diskon Belanja di Shopee</div>
         <div class="copy-toast" id="toast-${i}">✓ Kode disalin!</div>
       </div>
     `;
