@@ -666,3 +666,23 @@ const HAERU_CAMEO_EFUNG = {
   ],
   birruReply: "Udah kabur duluan tuh — emang dia. Halo, Bang. 😄"
 };
+
+// ══════════════════════════════════════════════════════════
+// 9. LINK VOUCHER TAMBAHAN (kopi, indomaret, pln, pulsa)
+// Isi dengan URL dari voucherku.com sesuai voucher yang kamu beli
+// ══════════════════════════════════════════════════════════
+
+const VOUCHERS = {
+  "saeful bahri": {
+    kopi:      { link: "https://voucherku.com/link-voucher-kopi-untuk-bang-efung" },
+    indomaret: { link: "https://voucherku.com/link-voucher-indomaret-untuk-bang-efung" },
+    pln:       { link: "https://voucherku.com/link-voucher-pln-untuk-bang-efung" },
+    pulsa:     { link: "https://voucherku.com/link-voucher-pulsa-untuk-bang-efung" },
+  },
+  "amriah fauziah": {
+    kopi:      { link: "https://voucherku.com/link-voucher-kopi-untuk-kak-ziah" },
+    indomaret: { link: "" },
+    pln:       { link: "" },
+    pulsa:     { link: "" },
+  },
+};
