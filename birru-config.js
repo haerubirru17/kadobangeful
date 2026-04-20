@@ -680,9 +680,9 @@ const VOUCHERS = {
     pulsa:     { link: "https://giftcard.voucherku.com/redeem/retail/USHAM5D136769E61312CC4F1" },
   },
   "amriah fauziah": {
-    kopi:      { link: "https://voucherku.com/link-voucher-kopi-untuk-kak-ziah" },
-    indomaret: { link: "" },
-    pln:       { link: "" },
-    pulsa:     { link: "" },
+    kopi:      { link: "https://giftcard.voucherku.com/redeem/retail/SDNBXE4136769E61A51604A4" },
+    indomaret: { link: "https://giftcard.voucherku.com/redeem/retail/DTVUQS136769E61A5163AE6" },
+    pln:       { link: "https://giftcard.voucherku.com/redeem/retail/HAO7URR136769E61A51659B7" },
+    pulsa:     { link: "https://giftcard.voucherku.com/redeem/retail/RUFCN9T136769E61A51677CD" },
   },
 };
