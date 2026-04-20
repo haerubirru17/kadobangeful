@@ -1665,22 +1665,22 @@ body.chat-active .letter-paper {
   flex-direction: column;
   position: relative;
   z-index: 1;
-  margin-top: 38vh;
+  margin-top: 26vh;
   /* Berhenti sebelum dekorasi bawah gambar (~85vh) minus ruang tombol */
-  height: calc(44vh - 5rem);
+  height: calc(56vh - 5rem);
 }
 
 @media (max-height: 700px) {
   .birru-container {
-    margin-top: 34vh;
-    height: calc(44vh - 5rem);
+    margin-top: 20vh;
+    height: calc(58vh - 5rem);
   }
 }
 
 @media (max-height: 580px) {
   .birru-container {
-    margin-top: 28vh;
-    height: calc(48vh - 5rem);
+    margin-top: 15vh;
+    height: calc(62vh - 5rem);
   }
 }
 
@@ -2497,22 +2497,10 @@ function showGiftCards() {
 
     if (currentUser === 'amriah fauziah' && HAERU_CAMEO.enabled) {
       await runHaeuCameo();
+    } else if (currentUser === 'saeful bahri' && typeof HAERU_CAMEO_EFUNG !== 'undefined' && HAERU_CAMEO_EFUNG.enabled) {
+      await runHaeuCameoEfung();
     } else {
       await window.BirruDev.sendBotMessage(true);
-      // Bubble kedua khusus Bang Efung — info kemampuan singkat
-      if (currentUser === 'saeful bahri') {
-        await new Promise(r => setTimeout(r, 1200));
-        const ls = document.getElementById('letter-screen');
-        const birruTyping = document.getElementById('typingIndicator');
-        birruTyping.classList.add('visible');
-        ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' });
-        await new Promise(r => setTimeout(r, 2000));
-        birruTyping.classList.remove('visible');
-        await new Promise(r => setTimeout(r, 150));
-        const msg = "Kalau mau ngobrol, nanya sesuatu, atau dengerin musik — bilang aja, Bang.";
-        addChatMessage('bot', msg);
-        conversationHistory.push({ role: 'assistant', content: msg });
-      }
     }
 
     currentChipIndex = 0;
@@ -3176,6 +3164,76 @@ async function runHaeuCameo() {
   const pianoMsg = "Aku bisa temenin ngobrol, ceritain soal keluarga Haeru, atau mainkan piano buat nemenin momen ini. 🎵";
   addChatMessage('bot', pianoMsg);
   conversationHistory.push({ role: 'assistant', content: pianoMsg });
+}
+
+async function runHaeuCameoEfung() {
+  const ls = document.getElementById('letter-screen');
+  const haeuTyping = document.getElementById('haeru-typing');
+  const birruTyping = document.getElementById('typingIndicator');
+
+  const messages = Array.isArray(HAERU_CAMEO_EFUNG.messages)
+    ? HAERU_CAMEO_EFUNG.messages
+    : [];
+
+  // 1. Jeda awal
+  await new Promise(r => setTimeout(r, 1000));
+
+  // 2. Notif Haeru masuk
+  addSystemNotif('Haeru bergabung');
+  await new Promise(r => setTimeout(r, 1400));
+
+  // 3. Loop tiap pesan: typing → bubble → jeda
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i];
+
+    // Durasi typing proporsional ~32 karakter/detik, min 2s, max 5s
+    const typingDuration = Math.min(5000, Math.max(2000, Math.round(msg.length / 32) * 1000));
+
+    haeuTyping.classList.add('visible');
+    ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' });
+    await new Promise(r => setTimeout(r, typingDuration));
+
+    haeuTyping.classList.remove('visible');
+    await new Promise(r => setTimeout(r, 180));
+    addHaeruMessage(msg);
+    ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' });
+
+    // Jeda antar bubble — kecuali setelah pesan terakhir
+    if (i < messages.length - 1) {
+      await new Promise(r => setTimeout(r, 900));
+    }
+  }
+
+  // 4. Tunggu sinyal Bang Efung sudah baca (max 20 detik)
+  await waitForReadSignal(20000);
+  addHaeruReadReceipt();
+
+  // 5. Notif Haeru keluar
+  addSystemNotif('Haeru keluar dari obrolan');
+  await new Promise(r => setTimeout(r, 1200));
+
+  // 6. Birru typing — agak lama, kesan "memproses" situasi dulu
+  birruTyping.classList.add('visible');
+  ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' });
+  await new Promise(r => setTimeout(r, 4000));
+
+  // 7. Birru balas — quote bubble terakhir Haeru
+  birruTyping.classList.remove('visible');
+  await new Promise(r => setTimeout(r, 200));
+  const quotedMsg = messages[messages.length - 1];
+  addChatMessage('bot', HAERU_CAMEO_EFUNG.birruReply, quotedMsg, 'Haeru');
+  conversationHistory.push({ role: 'assistant', content: HAERU_CAMEO_EFUNG.birruReply });
+
+  // 8. Bubble kedua Birru — info kemampuan singkat
+  await new Promise(r => setTimeout(r, 1800));
+  birruTyping.classList.add('visible');
+  ls.scrollTo({ top: ls.scrollHeight, behavior: 'smooth' });
+  await new Promise(r => setTimeout(r, 2500));
+  birruTyping.classList.remove('visible');
+  await new Promise(r => setTimeout(r, 180));
+  const infoMsg = "Kalau mau ngobrol, nanya sesuatu, atau dengerin musik — bilang aja, Bang.";
+  addChatMessage('bot', infoMsg);
+  conversationHistory.push({ role: 'assistant', content: infoMsg });
 }
 
 function addHaeruReadReceipt() {
