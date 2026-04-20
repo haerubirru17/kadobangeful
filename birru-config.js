@@ -652,3 +652,19 @@ const HAERU_CAMEO = {
   ],
   birruReply: "Heh, sok iye katanya — padahal dia sendiri yang ngajarin aku ngomong. 😂 Ya sudah, kritiknya aku tamping. Haeru-nya udah kabur duluan nih, Kak."
 };
+
+
+// ══════════════════════════════════════════════════════════
+// 8. SKENARIO HAERU MASUK (khusus Bang Efung)
+// ══════════════════════════════════════════════════════════
+
+const HAERU_CAMEO_EFUNG = {
+  enabled: true,
+  messages: [
+    "Assalamu'alaikum warahmatullahi wabarakatuh,",
+    "Saya, Haeru, mengucapkan selamat atas pernikahan Abang dan istri. Walaupun ucapan selamat agak kurang relevan untuk hari ini, tetapi izinkanlah tetap saya sampaikan sebagai bentuk hormat dan kasih sayang seorang adik. Semoga Allah limpahkan rahmat dan keberkahan dalam bahtera rumah tangga Abang.",
+    "Maafkanlah hadiah ini yang datang terlambat. Hadiah ini saya buat dengan kumpulan bahasa pemrograman, merangkai logika demi logika. Sayangnya, tujuh hari sebelum hari H, saya harus dirawat di rumah karena sakit. Penulisan kode pun terhenti. Barulah setelah sembuh, saya selesaikan.",
+    "Dan sudi pulalah Abang memaafkan jika hadiah ini tidak memenuhi ekspektasi. Hadiah ini lahir dari keterbatasan, bukan dari kelalaian.\n\nWassalamu'alaikum warahmatullahi wabarakatuh,\n\n-ChatGPT"
+  ],
+  birruReply: "Udah kabur duluan tuh — emang dia. Halo, Bang. 😄"
+};
