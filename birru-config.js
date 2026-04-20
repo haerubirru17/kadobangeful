@@ -674,10 +674,10 @@ const HAERU_CAMEO_EFUNG = {
 
 const VOUCHERS = {
   "saeful bahri": {
-    kopi:      { link: "https://www.google.com" },
-    indomaret: { link: "https://voucherku.com/link-voucher-indomaret-untuk-bang-efung" },
-    pln:       { link: "https://voucherku.com/link-voucher-pln-untuk-bang-efung" },
-    pulsa:     { link: "https://voucherku.com/link-voucher-pulsa-untuk-bang-efung" },
+    kopi:      { link: "https://giftcard.voucherku.com/redeem/retail/RU6WX1N136769E61312CA762" },
+    indomaret: { link: "https://giftcard.voucherku.com/redeem/retail/HACE15Z136769E61312C58EA" },
+    pln:       { link: "https://giftcard.voucherku.com/redeem/retail/SD3RZMY136769E61312C8987" },
+    pulsa:     { link: "https://giftcard.voucherku.com/redeem/retail/USHAM5D136769E61312CC4F1" },
   },
   "amriah fauziah": {
     kopi:      { link: "https://voucherku.com/link-voucher-kopi-untuk-kak-ziah" },
