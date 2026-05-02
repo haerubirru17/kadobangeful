@@ -13,14 +13,9 @@ const WORKER_URL = "https://kadobangeful.haerubirru17.workers.dev";
 const YOUTUBE_VIDEO_ID = "GANTI_DENGAN_VIDEO_ID_YOUTUBE";
 const WA_NUMBER = "62895347201717";
 
-// ── Kode Shopee Gift Card per penerima ─────────────────────
-// Isi dengan kode asli dari Shopee (deretan huruf/angka).
-// Kosongkan array [] jika tidak ada kode untuk penerima tersebut.
-const SHOPEE_CODES = {
-  "saeful bahri":   ["SGV50MP04HYXXHS"],
-  "amriah fauziah": ["SGV50MP04UUEXD7"],
-  "haeru damiyati": [],
-};
+// ── Kode Shopee & link voucher dipindah ke Worker Secret ───
+// Diambil otomatis via /verify setelah user input nama.
+
 
 // ── Daftar file musik (taruh di folder sounds/music/) ──────
 // Judul otomatis diambil dari nama file — tidak perlu ditulis manual.
@@ -674,24 +669,4 @@ const HAERU_CAMEO_EFUNG = {
     "Dan sudi pulalah Abang memaafkan jika hadiah ini tidak memenuhi ekspektasi. Hadiah ini lahir dari keterbatasan, bukan dari kelalaian.\n\nWassalamu'alaikum warahmatullahi wabarakatuh,\n\n-ChatGPT"
   ],
   birruReply: "Udah kabur duluan tuh — emang dia. Halo, Bang. 😄"
-};
-
-// ══════════════════════════════════════════════════════════
-// 9. LINK VOUCHER TAMBAHAN (kopi, indomaret, pln, pulsa)
-// Isi dengan URL dari voucherku.com sesuai voucher yang kamu beli
-// ══════════════════════════════════════════════════════════
-
-const VOUCHERS = {
-  "saeful bahri": {
-    kopi:      { link: "https://giftcard.voucherku.com/redeem/retail/RU6WX1N136769E61312CA762" },
-    indomaret: { link: "https://giftcard.voucherku.com/redeem/retail/HACE15Z136769E61312C58EA" },
-    pln:       { link: "https://giftcard.voucherku.com/redeem/retail/SD3RZMY136769E61312C8987" },
-    pulsa:     { link: "https://giftcard.voucherku.com/redeem/retail/USHAM5D136769E61312CC4F1" },
-  },
-  "amriah fauziah": {
-    kopi:      { link: "https://giftcard.voucherku.com/redeem/retail/SDNBXE4136769E61A51604A4" },
-    indomaret: { link: "https://giftcard.voucherku.com/redeem/retail/DTVUQS136769E61A5163AE6" },
-    pln:       { link: "https://giftcard.voucherku.com/redeem/retail/HAO7URR136769E61A51659B7" },
-    pulsa:     { link: "https://giftcard.voucherku.com/redeem/retail/RUFCN9T136769E61A51677CD" },
-  },
 };
