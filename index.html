@@ -3165,7 +3165,7 @@ function showGiftCards() {
   const voucherData = window._GIFT_VOUCHERS || {};
   const brands = ['kopi', 'indomaret', 'pln', 'pulsa'];
   brands.forEach((brand, i) => {
-    const cfg = voucherData[brand] || { link: '' };
+    const cfg = { link: typeof voucherData[brand] === 'string' ? voucherData[brand] : (voucherData[brand]?.link || '') };
     const card = buildVoucherCard(brand, cfg, codes.length + i);
     container.appendChild(card);
     setTimeout(() => card.classList.add('revealed'), (codes.length + i) * 200 + 300);
