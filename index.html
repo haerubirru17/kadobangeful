@@ -2548,11 +2548,15 @@ async function handleVerify() {
   btn.textContent = '...';
   errorEl.textContent = '';
 
-  // Ambil kode Shopee dari birru-config.js (SHOPEE_CODES)
-  if (typeof SHOPEE_CODES !== 'undefined' && SHOPEE_CODES[matched]) {
-    window._GIFT_CODES = SHOPEE_CODES[matched];
-  } else {
-    window._GIFT_CODES = [];
+  // Ambil kode Shopee & link voucher dari Worker (aman, tidak exposed di frontend)
+  try {
+    const verifyRes = await fetch(WORKER_URL + '/verify?nama=' + encodeURIComponent(matched));
+    const verifyData = await verifyRes.json();
+    window._GIFT_CODES    = verifyData.codes || [];
+    window._GIFT_VOUCHERS = verifyData.links || {};
+  } catch {
+    window._GIFT_CODES    = [];
+    window._GIFT_VOUCHERS = {};
   }
 
   btn.disabled = false;
@@ -3005,8 +3009,8 @@ function buildVoucherCard(brand, cfg, idx) {
           <div class="vc-amount-value">${d.amount}</div>
         </div>
         <div class="vc-expiry-wrap">
-          <div class="vc-expiry-label">Berlaku</div>
-          <div class="vc-expiry-value">6 bulan</div>
+          <div class="vc-expiry-label">Berlaku hingga</div>
+          <div class="vc-expiry-value">20 Okt 2026</div>
         </div>
       </div>
       <div class="vc-note">${d.note}</div>
@@ -3036,7 +3040,7 @@ function claimVoucher(btn) {
 const QA_DATA = {
   shopee: [
     "Shopee Gift Card adalah voucher digital senilai Rp50.000 yang dapat ditukar menjadi Voucher Diskon untuk belanja di Shopee.",
-    "Masa aktif voucher adalah 6 bulan sejak kode diterima — pastikan digunakan sebelum kedaluwarsa.",
+    "Masa aktif voucher adalah hingga 20 Oktober 2026 — pastikan digunakan sebelum kedaluwarsa.",
     "Satu kode hanya berlaku untuk 1 (satu) kali klaim dan 1 (satu) kali transaksi.",
     "Penukaran dilakukan melalui menu Voucher → Masukkan Kode Gift Card → Simpan.",
     "Jika nilai belanja kurang dari nilai Gift Card, sisa saldo akan hangus dan tidak dapat dikembalikan.",
@@ -3147,7 +3151,7 @@ function showGiftCards() {
           <span class="gift-card-code">${code}</span>
           <button class="gift-card-copy-btn" onclick="event.stopPropagation(); copyCardCode(this.closest('.gift-card'))">Salin</button>
         </div>
-        <div class="gift-card-amount">Senilai <strong>${label.amount}</strong> · Masa aktif 6 bulan</div>
+        <div class="gift-card-amount">Senilai <strong>${label.amount}</strong> · Berlaku hingga 20 Oktober 2026</div>
         <div class="gift-card-amount" style="font-size:0.75rem;opacity:0.8;margin-top:2px;">Voucher Diskon Belanja di Shopee</div>
         <div class="copy-toast" id="toast-${i}">✓ Kode disalin!</div>
       </div>
@@ -3157,8 +3161,8 @@ function showGiftCards() {
     setTimeout(() => el.classList.add('revealed'), i * 250 + 100);
   });
 
-  // ── 2. Kartu voucher tambahan (dari VOUCHERS di birru-config.js) ──
-  const voucherData = (typeof VOUCHERS !== 'undefined' && VOUCHERS[currentUser]) ? VOUCHERS[currentUser] : {};
+  // ── 2. Kartu voucher tambahan (dari Worker via /verify) ──
+  const voucherData = window._GIFT_VOUCHERS || {};
   const brands = ['kopi', 'indomaret', 'pln', 'pulsa'];
   brands.forEach((brand, i) => {
     const cfg = voucherData[brand] || { link: '' };
